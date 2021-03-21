@@ -5,8 +5,8 @@
 #  This file is part of the AstroTool Python package,
 #  see: http://astro.ru.nl/~sluys/AstroTool/
 #   
-#  AstroTool has been developped by Marc van der Sluys of the Department of Astrophysics at the Radboud
-#  University Nijmegen, the Netherlands and the departmen of Sustainable energy of the HAN University of
+#  AstroTool has been developed by Marc van der Sluys of the Department of Astrophysics at the Radboud
+#  University Nijmegen, the Netherlands and the department of Sustainable energy of the HAN University of
 #  applied sciences in Arnhem, the Netherlands.
 #   
 #  This is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
