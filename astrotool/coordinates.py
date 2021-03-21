@@ -86,8 +86,8 @@ def ecl2eq(lon,lat, eps):
         - dec (double):  Declination (rad).
     
     References:
-      - [Explanatory Supplement to the Astronomical Almanac 3rd Ed,
-        Eq.14.43](https://aa.usno.navy.mil/publications/docs/exp_supp.php)
+      - `Explanatory Supplement to the Astronomical Almanac 3rd Ed,
+        Eq.14.43 <https://aa.usno.navy.mil/publications/docs/exp_supp.php>`_
 
     """
     

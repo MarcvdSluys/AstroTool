@@ -1,5 +1,3 @@
-#!/bin/env python
-
 #  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
 #  This file is part of the AstroTool Python package,
@@ -342,7 +340,7 @@ def deltat_1820(jd):
       double:  Delta T (s).
     
     References:
-      - [Extrapolation of Delta T](http://hemel.waarnemen.com/Computing/deltat.html).
+      - `Extrapolation of Delta T <http://hemel.waarnemen.com/Computing/deltat.html>`_.
 
     """
     
@@ -365,9 +363,9 @@ def deltat(jd):
       double:  Delta T (s).
     
     References:
-      - [International Earth Rotation and Reference Systems Service](ftp://maia.usno.navy.mil/ser7/deltat.data) of the U.S. Naval Observatory.
-      - [Robert van Gent's website on Delta T](https://www.staff.science.uu.nl/~gent0113/deltat/deltat.htm).
-      - [Extrapolation of Delta T](http://hemel.waarnemen.com/Computing/deltat.html).
+      - `International Earth Rotation and Reference Systems Service <ftp://maia.usno.navy.mil/ser7/deltat.data>`_ of the U.S. Naval Observatory.
+      - `Robert van Gent's website on Delta T <https://www.staff.science.uu.nl/~gent0113/deltat/deltat.htm>`_.
+      - `Extrapolation of Delta T <http://hemel.waarnemen.com/Computing/deltat.html>`_.
     
     """
     

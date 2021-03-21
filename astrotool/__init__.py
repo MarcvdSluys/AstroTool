@@ -19,12 +19,14 @@
 #  <http://www.gnu.org/licenses/>.
 
 
-"""AstroTool package
+"""
+AstroTool package
+=================
 
 AstroTool is a Python package to do basic astronomical calculations in Python or on the command line.  The
 package can be used under the conditions of the GPLv3 licence.  These pages contain the API documentation.
-For more information on the Python package, licence, source code and data files, see the [AstroTool
-homepage](http://astro.ru.nl/~sluys/AstroTool/).
+For more information on the Python package, licence, source code and data files, see the `AstroTool
+homepage <http://astro.ru.nl/~sluys/AstroTool/>`_.
 
 """
 
