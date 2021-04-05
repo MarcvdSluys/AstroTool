@@ -66,9 +66,10 @@ def julian_day(year,month,day):
             month += 12
             
             a=0; b=0              # Assume a Julian date by default
-            if(year0 > 1582):     # Assume a Gregorian date for years after 1582
-                a = np.floor(year/100.0)
-                b = 2 - a + np.floor(a/4.0)
+            
+        if(year0 > 1582):     # Assume a Gregorian date for years after 1582
+            a = np.floor(year/100.0)
+            b = 2 - a + np.floor(a/4.0)
                 
     jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day + b - 1524.5
     
