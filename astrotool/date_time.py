@@ -40,25 +40,31 @@ def julian_day(year,month,day):
     
     Returns:
       double:  jd: Julian day (days).
-
+      
     """
     
-    year0 = year
-    
-    if(type(month) is np.ndarray):  # If we have a numpy array
+    if(np.ndim(month) > 0):  # Array-like
+        # Ensure we have numpy.ndarrays:
+        year  = np.asarray(year)
+        month = np.asarray(month)
+        day   = np.asarray(day)
+        year0 = year
+        
         # Jan and Feb are month 13 and 14 of the previous year:
         year[month <= 2] -= 1
         month[month <= 2] += 12
         
         # Assume a Julian date by default:
-        a = np.zeros(len(month))
-        b = np.zeros(len(month))
+        a = np.zeros(np.shape(month))
+        b = np.zeros(np.shape(month))
         
         # Assume a Gregorian date for years after 1582:
         a[year0 > 1582] = np.floor(year[year0 > 1582]/100.0)
         b[year0 > 1582] = 2 - a[year0 > 1582] + np.floor(a[year0 > 1582]/4.0)
         
     else:                           # If we have a scalar
+        
+        year0 = year
         
         # Jan and Feb are month 13 and 14 of the previous year:
         if(month <= 2):
@@ -100,7 +106,7 @@ def date_time2jd(year,month,day, hour,minute,second):
     """
     
     dday = day + hour/24 + minute/1440 + second/86400
-    jd = julian_day(year, month, dday)
+    jd   = julian_day(year, month, dday)
     
     return jd
 
@@ -130,13 +136,15 @@ def jd2ymd(jd):
     z = np.floor(jd+0.5)
     f = jd + 0.5 - z
     
-    if(type(z) is np.ndarray):  # If we have a numpy array
+    if(np.ndim(z) > 0):  # Array-like
+        z = np.asarray(z)  # Ensure we have a numpy.ndarray
         a = z
         
         # If z >= 2299161, use the Gregorian calendar:
-        alpha = np.zeros(len(z))
-        alpha[z >= 2299161] = np.floor((z[z >= 2299161]-1867216.25)/36524.25)
-        a[z >= 2299161] = z[z >= 2299161] + 1 + alpha[z >= 2299161] - np.floor(alpha[z >= 2299161]/4.)
+        sel        = (z >= 2299161)
+        alpha      = np.zeros(np.shape(z))
+        alpha[sel] = np.floor((z[sel]-1867216.25)/36524.25)
+        a[sel]     = z[sel] + 1 + alpha[sel] - np.floor(alpha[sel]/4.)
         
     else:                       # If we have a scalar
         
@@ -153,12 +161,13 @@ def jd2ymd(jd):
     e = np.floor((b-d)/30.6001)
     day = b - d - np.floor(30.6001*e) + f
     
-    if(type(e) is np.ndarray):  # If we have a numpy array
-        month = np.zeros(len(e)).astype(int)
+    if(np.ndim(e) > 0):  # Array-like
+        e = np.asarray(e)  # Ensure we have a numpy.ndarray
+        month = np.zeros(np.shape(e)).astype(int)
         month[e  < 14] = (e[e  < 14] -  1)
         month[e >= 14] = (e[e >= 14] - 13)
         
-        year = np.zeros(len(month)).astype(int)
+        year = np.zeros(np.shape(month)).astype(int)
         year[month  > 2] = (c[month  > 2] - 4716)
         year[month <= 2] = (c[month <= 2] - 4715)
         
@@ -286,26 +295,45 @@ def doy_from_ymd(year, month, day):
 
     """
     
-    today    = date_time2jd(year, month, int(np.floor(day)),  0, 0, 0.0)
-    JanFirst = date_time2jd(year, 1, 1,  0, 0, 0.0)
-    doy      = int(np.floor(today - JanFirst + 1))
+    if(np.ndim(year) > 0):  # Array-like:
+        # Ensure we have numpy.ndarrays:
+        year     = np.asarray(year)
+        month    = np.asarray(month)
+        day      = np.asarray(day)
+        
+        ones     = np.ones(year.shape)  # Array for first month and first day
+        
+        today    = date_time2jd(year, month, np.floor(day).astype(int),  0, 0, 0.0)
+        JanFirst = date_time2jd(year, ones, ones,  0, 0, 0.0)
+        doy      = np.floor(today - JanFirst + 1).astype(int)
+        
+    else:
+        today    = date_time2jd(year, month, int(np.floor(day)),  0, 0, 0.0)
+        JanFirst = date_time2jd(year, 1, 1,  0, 0, 0.0)
+        doy      = int(np.floor(today - JanFirst + 1))
     
     return doy
 
 
 
-def doy_from_datetime(datetime):
+def doy_from_datetime(date_time):
     """Compute the day of year for a given datetime.
     
     Parameters:
-      datetime (datetime):   Date and time.
+      date_time (datetime):   Date and time.
 
     Returns:
       (int):        Day of year.
 
     """
     
-    doy = doy_from_ymd(datetime.year, datetime.month, datetime.day)
+    if(np.ndim(date_time) > 0):  # Array-like:
+        date_time = np.asarray(date_time)           # Ensure we have an np.ndarray
+        ymd = ymdhms_us_from_datetime64(date_time)
+        doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
+        
+    else:  # Scalar:
+        doy = doy_from_ymd(date_time.year, date_time.month, date_time.day)
     
     return doy
 
