@@ -427,6 +427,38 @@ def deltat(jd):
 
 
 
+def ymdhms_us_from_datetime64(dt64):
+    """Convert (array of) datetime64 to a calendar (array of) year, month, day, hour, minute, seconds,
+    microsecond with these quantites indexed on the last axis.
+    
+    Parameters:
+      dt64 (datetime64):  (numpy array of) datetime(s) (of arbitrary shape).
+      
+    Returns:
+       uint32 array:  (..., 7) calendar array with last axis representing year, month, day, hour, minute,
+                      second, microsecond.
+    
+    Note:
+      - Nicked from https://stackoverflow.com/a/56260054/1386750
+    """
+    
+    # Allocate output:
+    out = np.empty(dt64.shape + (7,), dtype="u4")
+    
+    # Decompose calendar floors:
+    Y, M, D, h, m, s = [dt64.astype(f"M8[{x}]") for x in "YMDhms"]
+    
+    out[..., 0] = Y + 1970                     # Gregorian Year
+    out[..., 1] = (M - Y) + 1                  # month
+    out[..., 2] = (D - M) + 1                  # day
+    out[..., 3] = (dt64 - D).astype("m8[h]")   # hour
+    out[..., 4] = (dt64 - h).astype("m8[m]")   # minute
+    out[..., 5] = (dt64 - m).astype("m8[s]")   # second
+    out[..., 6] = (dt64 - s).astype("m8[us]")  # microsecond
+    
+    return out
+
+
 # Test code:
 if(__name__ == "__main__"):
     print(julian_day(2000,1,1.0))
