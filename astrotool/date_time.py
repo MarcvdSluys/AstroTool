@@ -273,6 +273,44 @@ def fix_date_time(year,month,day, hour,minute,second):
 
 
 
+def doy_from_ymd(year, month, day):
+    """Compute the day of year for a given year, month and day.
+    
+    Parameters:
+      year (int):   Year of date.
+      month (int):  Month of date.
+      day (int):    Day of date.
+
+    Returns:
+      (int):        Day of year.
+
+    """
+    
+    today    = date_time2jd(year, month, int(np.floor(day)),  0, 0, 0.0)
+    JanFirst = date_time2jd(year, 1, 1,  0, 0, 0.0)
+    doy      = int(np.floor(today - JanFirst + 1))
+    
+    return doy
+
+
+
+def doy_from_datetime(datetime):
+    """Compute the day of year for a given datetime.
+    
+    Parameters:
+      datetime (datetime):   Date and time.
+
+    Returns:
+      (int):        Day of year.
+
+    """
+    
+    doy = doy_from_ymd(datetime.year, datetime.month, datetime.day)
+    
+    return doy
+
+
+
 def jd2tjc(jd):
     """Compute the time in Julian centuries since 2000.0.
     
@@ -386,6 +424,7 @@ def deltat(jd):
     
     else:                    # linear interpolation from known data
         return np.interp(year, years, DTvalues)
+
 
 
 # Test code:
