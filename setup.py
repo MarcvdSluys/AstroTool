@@ -4,7 +4,7 @@
 
 
 # Package version:
-version="0.0.2"
+version="0.0.3"
 
 # Get long description from README.md:
 with open("README.md", "r") as fh:
@@ -19,7 +19,7 @@ setup(
     url='http://astro.ru.nl/~sluys/AstroTool',
     
     packages=['astrotool'],
-    install_requires=['numpy','fortranformat'],
+    install_requires=['numpy'],
     long_description=long_description,
     long_description_content_type='text/markdown',
     

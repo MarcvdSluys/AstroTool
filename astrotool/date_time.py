@@ -1,3 +1,5 @@
+#!/bin/env python
+
 #  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
 #  This file is part of the AstroTool Python package,
@@ -20,9 +22,13 @@
 """Date and time functions for AstroTool."""
 
 
+# Allow relative imports from __main__() when running this file (PEP 366):
+if(__name__ == "__main__" and __package__ is None):
+    __package__ = "astrotool"
+
 # Modules:
 import numpy as np
-from astrotool.constants import pi2, jd1820,jd2000
+from .constants import pi2, jd1820,jd2000
 
 
 def julian_day(year,month,day):

@@ -22,10 +22,14 @@
 """Coordinate transformations and related functions for AstroTool."""
 
 
+# Allow relative imports from __main__() when running this file (PEP 366):
+if(__name__ == "__main__" and __package__ is None):
+    __package__ = "astrotool"
+
 # Modules:
-import numpy.core as np
-from astrotool.constants import pi2, r2d,as2r, earth_rad,AU
-import astrotool.date_time as atdt
+import numpy as np
+from .constants import pi2, d2r,r2d,as2r, earth_rad,AU
+from .date_time import jd2tjc
 
 
 
@@ -43,7 +47,7 @@ def obliquity(jd):
 
     """
     
-    tJC = atdt.jd2tjc(jd)  # Time in Julian centuries since J2000.0
+    tJC = jd2tjc(jd)  # Time in Julian centuries since J2000.0
     eps = 0.409092804 - 2.269655e-4*tJC - 2.86e-9*tJC**2 + 8.78967e-9*tJC**3  # Obliquity of the ecliptic (rad)
     
     return eps
@@ -165,7 +169,7 @@ def precess_from_2000(jd, ra,dec):
     
     """
     
-    tJC  = atdt.jd2tjc(jd)  # Time in Julian centuries since J2000.0
+    tJC  = jd2tjc(jd)  # Time in Julian centuries since J2000.0
     tJC2 = tJC**2
     tJC3 = tJC*tJC2
     
@@ -250,6 +254,5 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
 
 # Test code:
 if(__name__ == "__main__"):
-    from constants import d2r
     print(geoc2topoc_ecl(0.0,0.0, AU,AU, 23*d2r,0.0, 52*d2r,0.0, debug=True))
     
