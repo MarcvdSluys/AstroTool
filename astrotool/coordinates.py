@@ -1,4 +1,5 @@
 #!/bin/env python
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
@@ -23,8 +24,8 @@
 
 
 # Allow relative imports from __main__() when running this file (PEP 366):
-if(__name__ == "__main__" and __package__ is None):
-    __package__ = "astrotool"
+if __name__ == '__main__' and __package__ is None:
+    __package__ = 'astrotool'
 
 # Modules:
 import numpy as np
@@ -253,6 +254,6 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
 
 
 # Test code:
-if(__name__ == "__main__"):
+if __name__ == '__main__':
     print(geoc2topoc_ecl(0.0,0.0, AU,AU, 23*d2r,0.0, 52*d2r,0.0, debug=True))
     

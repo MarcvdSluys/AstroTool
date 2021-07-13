@@ -1,4 +1,5 @@
 #!/bin/env python
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
@@ -46,6 +47,6 @@ AU = 1.495978707e8;     """Astronomical unit in km"""
 
 
 # Test code:
-if(__name__ == "__main__"):
+if __name__ == '__main__':
     print(pi, r2d, jd2000, earth_rad, AU)
     

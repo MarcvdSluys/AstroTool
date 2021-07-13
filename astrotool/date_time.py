@@ -1,4 +1,5 @@
 #!/bin/env python
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
@@ -23,8 +24,8 @@
 
 
 # Allow relative imports from __main__() when running this file (PEP 366):
-if(__name__ == "__main__" and __package__ is None):
-    __package__ = "astrotool"
+if __name__ == '__main__' and __package__ is None:
+    __package__ = 'astrotool'
 
 # Modules:
 import numpy as np
@@ -334,7 +335,7 @@ def doy_from_datetime(date_time):
     """
     
     if(np.ndim(date_time) > 0):  # Array-like:
-        date_time = np.asarray(date_time).astype("datetime64[ns]")  # Ensure we have an np.ndarray of type datetime64[ns]
+        date_time = np.asarray(date_time).astype('datetime64[ns]')  # Ensure we have an np.ndarray of type datetime64[ns]
         ymd = ymdhms_us_from_datetime64(date_time)
         doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
         
@@ -477,18 +478,18 @@ def ymdhms_us_from_datetime64(dt64):
     """
     
     # Allocate output:
-    out = np.empty(dt64.shape + (7,), dtype="u4")
+    out = np.empty(dt64.shape + (7,), dtype='u4')
     
     # Decompose calendar floors:
-    Y, M, D, h, m, s = [dt64.astype(f"M8[{x}]") for x in "YMDhms"]
+    Y, M, D, h, m, s = [dt64.astype(f'M8[{x}]') for x in 'YMDhms']
     
     out[..., 0] = Y + 1970                     # Gregorian Year
     out[..., 1] = (M - Y) + 1                  # month
     out[..., 2] = (D - M) + 1                  # day
-    out[..., 3] = (dt64 - D).astype("m8[h]")   # hour
-    out[..., 4] = (dt64 - h).astype("m8[m]")   # minute
-    out[..., 5] = (dt64 - m).astype("m8[s]")   # second
-    out[..., 6] = (dt64 - s).astype("m8[us]")  # microsecond
+    out[..., 3] = (dt64 - D).astype('m8[h]')   # hour
+    out[..., 4] = (dt64 - h).astype('m8[m]')   # minute
+    out[..., 5] = (dt64 - m).astype('m8[s]')   # second
+    out[..., 6] = (dt64 - s).astype('m8[us]')  # microsecond
     
     return out
 
@@ -510,6 +511,6 @@ def weekday_en_abbr_from_datetime(datetime):
 
 
 # Test code:
-if(__name__ == "__main__"):
+if __name__ == '__main__':
     print(julian_day(2000,1,1.0))
     

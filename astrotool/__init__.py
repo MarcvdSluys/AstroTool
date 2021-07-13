@@ -1,4 +1,5 @@
 #!/bin/env python
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2020-2021  Marc van der Sluys - marc.vandersluys.nl
 #   
@@ -31,9 +32,8 @@ homepage <http://astro.ru.nl/~sluys/AstroTool/>`_.
 """
 
 
-name = "astrotool"
+name = 'astrotool'
 
 from .constants import *
 from .coordinates import *
 from .date_time import *
-
