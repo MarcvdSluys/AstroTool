@@ -223,11 +223,11 @@ def jd2date_time(jd):
     Returns:
       tuple (int,int,int, int,int,double):  tuple containing (year CE, month, day,  hour, minute, second):
     
-      - year (int):       Year CE (UT).  Note that year=0 = 1 BCE.
-      - month (int):      Month number of year (UT; 1-12).
-      - day (int):        Day of month with fraction (UT; 1.0-31.999).
+      - year   (int):     Year CE (UT).  Note that year=0 = 1 BCE.
+      - month  (int):     Month number of year (UT; 1-12).
+      - day    (int):     Day of month with fraction (UT; 1.0-31.999).
     
-      - hour (int):       Hour of time of day (UT).
+      - hour   (int):     Hour of time of day (UT).
       - minute (int):     Minute of hour of time (UT).
       - second (double):  Second of minute of time (UT).
         
@@ -327,14 +327,14 @@ def doy_from_datetime(date_time):
     
     Parameters:
       date_time (datetime):   Date and time.
-
+      
     Returns:
       (int):        Day of year.
-
+      
     """
     
     if(np.ndim(date_time) > 0):  # Array-like:
-        date_time = np.asarray(date_time)           # Ensure we have an np.ndarray
+        date_time = np.asarray(date_time).astype("datetime64[ns]")  # Ensure we have an np.ndarray of type datetime64[ns]
         ymd = ymdhms_us_from_datetime64(date_time)
         doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
         
