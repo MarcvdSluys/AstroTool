@@ -493,6 +493,22 @@ def ymdhms_us_from_datetime64(dt64):
     return out
 
 
+def weekday_en_abbr_from_datetime(datetime):
+    """Return an English abbreviation of the weekday for a given datetime.
+    
+    Parameters:
+      datetime (datetime):
+    
+    Returns:
+      (str):  String with the three-character English abbreviation of the weekday (Mon-Sun).
+    
+    """
+    
+    weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+    
+    return weekdays[datetime.weekday()]
+
+
 # Test code:
 if(__name__ == "__main__"):
     print(julian_day(2000,1,1.0))
