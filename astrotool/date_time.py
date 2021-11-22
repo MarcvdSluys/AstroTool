@@ -35,12 +35,7 @@ from .constants import pi2, jd1820,jd2000
 def julian_day(year,month,day):
     """Compute the Julian Day for a given year, month and day.
     
-    Notes:
-      - Date and time are expressed in UT.
-      - Decimals can be used in the day to take into account the time of day other than midnight, e.g. 1.5 for
-        noon on the first day of the month.
-    
-    Parameters:
+    Args:
       year (int):    Year CE (UT).  Note that year=0 = 1 BCE.
       month (int):   Month number of year (UT; 1-12).
       day (double):  Day of month with fraction (UT; 1.0-31.999).
@@ -48,6 +43,11 @@ def julian_day(year,month,day):
     Returns:
       double:  jd: Julian day (days).
       
+    Notes:
+      - Date and time are expressed in UT.
+      - Decimals can be used in the day to take into account the time of day other than midnight, e.g. 1.5 for
+        noon on the first day of the month.
+    
     """
     
     if(np.ndim(month) > 0):  # Array-like
@@ -93,10 +93,7 @@ def julian_day(year,month,day):
 def date_time2jd(year,month,day, hour,minute,second):
     """Compute the Julian Day for a given year, month, day,  hour, minute and second.
     
-    Notes:
-      - Date and time are expressed in UT.
-    
-    Parameters:
+    Args:
       year (int):       Year CE (UT).  Note that year=0 = 1 BCE.
       month (int):      Month number of year (UT; 1-12).
       day (int):        Day of month with fraction (UT; 1.0-31.999).
@@ -108,7 +105,8 @@ def date_time2jd(year,month,day, hour,minute,second):
     Returns:
       double:  jd: Julian day (days).
     
-    Note:
+    Notes:
+      - Date and time are expressed in UT.
       - uses julian_day().
     """
     
@@ -120,15 +118,9 @@ def date_time2jd(year,month,day, hour,minute,second):
 
 
 def jd2ymd(jd):
-    """
-    Compute the calendar date from a given Julian Day.
+    """Compute the calendar date from a given Julian Day.
     
-    Notes:
-      - Date and time are expressed in UT.
-      - Decimals can be returned in the day to indicate the time of day, e.g. 1.0 for midnight and 1.5 for
-        noon on the first day of the month.
-    
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -137,6 +129,11 @@ def jd2ymd(jd):
         - year (int):    Year CE (UT).  Note that year=0 indicates 1 BCE.
         - month (int):   Month number of year (UT; 1-12).
         - day (double):  Day of month with fraction (UT; 1.0-31.999).
+    
+    Notes:
+      - Date and time are expressed in UT.
+      - Decimals can be returned in the day to indicate the time of day, e.g. 1.0 for midnight and 1.5 for
+        noon on the first day of the month.
     
     """
     
@@ -194,10 +191,9 @@ def jd2ymd(jd):
 
 
 def jd2year(jd):
-    """
-    Compute a year with fraction from a given Julian Day.
+    """Compute a year with fraction from a given Julian Day.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -215,10 +211,9 @@ def jd2year(jd):
 
 
 def jd2date_time(jd):
-    """
-    Compute the date and time from a given Julian Day.
+    """Compute the date and time from a given Julian Day.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -257,7 +252,7 @@ def fix_date_time(year,month,day, hour,minute,second):
     second, second=60.  More generally, this makes it straightforward to add or subtract dates and times and
     to take into account timezones, DST, et cetera.
     
-    Parameters:
+    Args:
       year (int):       Year CE.  Note that year=0 = 1 BCE.
       month (int):      Month number of year.
       day (int):        Day of month with fraction.
@@ -292,7 +287,7 @@ def fix_date_time(year,month,day, hour,minute,second):
 def doy_from_ymd(year, month, day):
     """Compute the day of year for a given year, month and day.
     
-    Parameters:
+    Args:
       year (int):   Year of date.
       month (int):  Month of date.
       day (int):    Day of date.
@@ -326,7 +321,7 @@ def doy_from_ymd(year, month, day):
 def doy_from_datetime(date_time):
     """Compute the day of year for a given datetime.
     
-    Parameters:
+    Args:
       date_time (datetime):   Date and time.
       
     Returns:
@@ -349,7 +344,7 @@ def doy_from_datetime(date_time):
 def jd2tjc(jd):
     """Compute the time in Julian centuries since 2000.0.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -364,7 +359,7 @@ def jd2tjc(jd):
 def jd2tjm(jd):
     """Compute the time in Julian millennia since 2000.0.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -379,7 +374,7 @@ def jd2tjm(jd):
 def gmst(jd):
     """Calculate Greenwich Mean Sidereal Time for any instant, in radians.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -407,7 +402,7 @@ def deltat_1820(jd):
     A lenghtening of the day of 1.8 ms/century is assumed, as well as and that the minimum of the parabola is
     DeltaT=12s in 1820.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -430,7 +425,7 @@ def deltat(jd):
       values.  Outside this range, a lenghtening of the day of 1.8 ms/century is assumed, as well as that the
       minimum of the parabola is DeltaT=12s in 1820.
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -466,7 +461,7 @@ def ymdhms_us_from_datetime64(dt64):
     """Convert (array of) datetime64 to a calendar (array of) year, month, day, hour, minute, seconds,
     microsecond with these quantites indexed on the last axis.
     
-    Parameters:
+    Args:
       dt64 (datetime64):  (numpy array of) datetime(s) (of arbitrary shape).
       
     Returns:
@@ -497,7 +492,7 @@ def ymdhms_us_from_datetime64(dt64):
 def weekday_en_abbr_from_datetime(datetime):
     """Return an English abbreviation of the weekday for a given datetime.
     
-    Parameters:
+    Args:
       datetime (datetime):
     
     Returns:

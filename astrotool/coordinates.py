@@ -37,7 +37,7 @@ from .date_time import jd2tjc
 def obliquity(jd):
     """Compute the obliquity of the ecliptic in radians from the JD(E).
     
-    Parameters:
+    Args:
       jd (double):  Julian day (days).
     
     Returns:
@@ -57,7 +57,7 @@ def obliquity(jd):
 def eq2ecl(ra,dec, eps):
     """Convert equatorial coordinates to ecliptical.
 
-    Parameters:
+    Args:
       ra (double):   Right ascension (rad).
       dec (double):  Declination (rad).
       eps (double):  Obliquity of the ecliptic (rad).
@@ -79,7 +79,7 @@ def eq2ecl(ra,dec, eps):
 def ecl2eq(lon,lat, eps):
     """Convert (geocentric) spherical ecliptical coordinates to spherical equatorial coordinates.
     
-    Parameters:
+    Args:
       lon (double):  Ecliptical longitude (rad).
       lat (double):  Ecliptical latitude (rad).
       eps (double):  Obliquity of the ecliptic (rad).
@@ -105,7 +105,7 @@ def ecl2eq(lon,lat, eps):
 def par2horiz(ha,dec, phi):
     """Convert parallactic coordinates to horizontal.
     
-    Parameters:
+    Args:
       ha (double):   Hour angle (rad).
       dec (double):  Declination (rad).
       phi (double):  Geographical latitude (rad, N>0).
@@ -127,7 +127,7 @@ def par2horiz(ha,dec, phi):
 def proper_motion(jd_start,jd_target, ra,dec, pma,pmd):
     """Compute the proper motion from jd_start to jd_target for the given positions and proper motions.
     
-    Parameters:
+    Args:
       jd_start (double):   Julian day of the initial epoch (days).
       jd_target (double):  Julian day of the target epoch (days).
     
@@ -157,7 +157,7 @@ def precess_from_2000(jd, ra,dec):
     
     J2000 is the equinox of many catalogues, including the Hipparcos one.
     
-    Parameters:
+    Args:
       jd (double):   Julian day (days).
       ra (double):   Right ascension (rad).
       dec (double):  Declination (rad).
@@ -187,7 +187,7 @@ def precess_from_2000(jd, ra,dec):
 def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, debug=False):
     """Convert spherical ecliptical coordinates from the geocentric to the topocentric system.
     
-    Parameters:
+    Args:
       lon_gc (double):   Geocentric ecliptic longitude (rad).
       lat_gc (double):   Geocentric ecliptic latitude (rad).
       dist_gc (double):  Geocentric distance (AU).
