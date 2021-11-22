@@ -32,16 +32,15 @@ import numpy as np
 from .constants import pi2, jd1820,jd2000
 
 
-def julian_day(year,month,day, julian=None):
+def julian_day(year,month,day, jd_start_greg=2299160.5):
     """Compute the Julian Day for a given year, month and day.
     
     Args:
-      year (int):    Year CE (UT).  Note that year=0 = 1 BCE.
-      month (int):   Month number of year (UT; 1-12).
-      day (double):  Day of month with fraction (UT; 1.0-31.999).
-      julian (bool):  Force Julian (True) or Gregorian calendar (False), optional.
-                      Default: None: Julian before 1583, else Gregorian.
-                      If an array, values must be True or False.
+      year (int):              Year CE (UT).  Note that year=0 = 1 BCE.
+      month (int):             Month number of year (UT; 1-12).
+      day (double):            Day of month with fraction (UT; 1.0-31.999).
+      jd_start_greg (double):  JD of the start of the Gregorian calendar
+                               (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
       double:  jd: Julian day (days).
@@ -59,19 +58,6 @@ def julian_day(year,month,day, julian=None):
         month = np.asarray(month)
         day   = np.asarray(day)
         
-        # Determine whether the Julian or Gregorian calendar should be used:
-        if julian is None:     # Not provided by user -> determine from date
-            gregorian = year > 1582  # False if <1583, True if >1582
-        else:  # julian was provided.  Could be a scalar or an array:
-            # Want julian to be an array:
-            if np.ndim(julian) == 0:  # julian is a scalar -> want an array with identical values
-                if julian:  # julian is True, gregorian must be false:
-                    gregorian = np.zeros(len(month)).astype(dtype=bool)  # array of zeros -> Falses
-                else:
-                    gregorian = np.ones(len(month)).astype(dtype=bool)   # array of ones -> Trues
-            else:  # julian is an array.  Values must be True or False.
-                gregorian = np.logical_not(julian)  # Flip True and False
-                
         # Jan and Feb are month 13 and 14 of the previous year:
         year[month <= 2]  -= 1
         month[month <= 2] += 12
@@ -80,26 +66,21 @@ def julian_day(year,month,day, julian=None):
         jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
         
         # Apply correction for Gregorian calendar:
-        cent_1         = np.floor(year[gregorian]/100.0)    # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
-        jd[gregorian] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
+        sel      = jd >= jd_start_greg                # Select the cases where the Gregorian calendar is desired
+        cent_1   = np.floor(year[sel]/100.0)          # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
+        jd[sel] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
         
     else:                           # If we have a scalar
-        
-        # Determine whether the Julian or Gregorian calendar should be used:
-        if julian is None:     # Not provided by user -> determine from date
-            gregorian = True                    # Assume a Gregorian date by default
-            if year < 1583:  gregorian = False  # Assume a Julian date before 1583
-        else:                  # Use as specified in interface
-            gregorian = not julian
         
         # Jan and Feb count as month 13 and 14 of the previous year:
         if month <= 2:
             year -= 1
             month += 12
-                
+        
+            # JD for the Julian calendar:
         jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
-            
-        if gregorian:  # If this is a Gregorian date:
+        
+        if jd >= jd_start_greg:  # If this is a Gregorian date:
             cent_1 = np.floor(year/100.0)               # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
             jd    += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
     
@@ -530,33 +511,35 @@ if __name__ == '__main__':
     print('JD for     0: ', julian_day(0,1,1.0))
     print()
     print('JD for    1J: ', julian_day(1,1,1.0))
-    print('JD for    1G: ', julian_day(1,1,1.0, julian=False))
+    print('JD for    1G: ', julian_day(1,1,1.0, jd_start_greg=0))
     print()
     print('JD for 1581:  ', julian_day(1581,1,1.0))
     print('JD for 1582:  ', julian_day(1582,1,1.0))
     print()
-    print('JD for 1582:  ', julian_day(1582,12,30.0))
-    print('JD for 1582:  ', julian_day(1582,12,31.0))
-    print('JD for 1583:  ', julian_day(1583,1,1.0))
-    print('JD for 1583:  ', julian_day(1583,1,2.0))
+    print('JD for 1582a: ', julian_day(1582,12,30.0))
+    print('JD for 1582b: ', julian_day(1582,12,31.0))
+    print('JD for 1583a: ', julian_day(1583,1,1.0))
+    print('JD for 1583b: ', julian_day(1583,1,2.0))
     print()
     print('JD for 1584:  ', julian_day(1584,1,1.0))
     print('JD for 1585:  ', julian_day(1585,1,1.0))
     print()
     print('JD for 2000G: ', julian_day(2000,1,1.0))
-    print('JD for 2000J: ', julian_day(2000,1,1.0, julian=True))
+    print('JD for 2000J: ', julian_day(2000,1,1.0, jd_start_greg=np.inf))
     
     years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
     months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
     days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
-    julians = [True,False, True,True, True,True,False,False, False,False, False,True]
+    # julians = [True,False, True,True, True,True,False,False, False,False, False,True]
+    inf = np.inf
+    jd_start_gregs = [inf,0,  inf,inf, inf,inf,0,0, 0,0, 0,inf]
     letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
     
-    JDs = julian_day(years,months,days, julian=julians)
-    # JDs = julian_day(years,months,days, julian=True)
+    JDs = julian_day(years,months,days, jd_start_greg=jd_start_gregs)
+    # JDs = julian_day(years,months,days, jd_start_greg=np.inf)
     for iter in range(len(JDs)):
         print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
-    
+        
     
     print()
     print()
@@ -584,6 +567,21 @@ if __name__ == '__main__':
     print()
     
     jds = np.arange(26)*1e5
-    yrs,mnts,dys = jd2ymd(jds)
+    jd_start_gregs = np.zeros(len(jds)) + np.inf
+    # yrs,mnts,dys = jd2ymd(jds)
+    yrs,mnts,dys = jd2ymd(jds, jd_start_greg=jd_start_gregs)
     for iter in range(len(jds)):
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jds[iter], yrs[iter], mnts[iter], dys[iter]))
+        
+    print()
+    for iter in range(11):
+        jd = 2299160.5-5+iter
+        yr,mnt,dy = jd2ymd(jd)
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
+    
+    print()
+    yr = 1582
+    mnt = 10
+    for dy in range(11):
+        jd = julian_day(yr,mnt,dy)
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
