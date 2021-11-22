@@ -76,13 +76,12 @@ def julian_day(year,month,day, julian=None):
         year[month <= 2]  -= 1
         month[month <= 2] += 12
         
-        # Assume a Julian date by default:
-        a = np.zeros(np.shape(month))
-        b = np.zeros(np.shape(month))
+        # JD for Julian calendar:
+        jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
         
-        # Assume a Gregorian date for years after 1582:
-        a[gregorian] = np.floor(year[gregorian]/100.0)
-        b[gregorian] = 2 - a[gregorian] + np.floor(a[gregorian]/4.0)
+        # Apply correction for Gregorian calendar:
+        cent_1         = np.floor(year[gregorian]/100.0)    # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
+        jd[gregorian] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
         
     else:                           # If we have a scalar
         
@@ -93,18 +92,16 @@ def julian_day(year,month,day, julian=None):
         else:                  # Use as specified in interface
             gregorian = not julian
         
-        # Jan and Feb are month 13 and 14 of the previous year:
+        # Jan and Feb count as month 13 and 14 of the previous year:
         if month <= 2:
             year -= 1
             month += 12
+                
+        jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
             
         if gregorian:  # If this is a Gregorian date:
-            a = np.floor(year/100.0)
-            b = 2 - a + np.floor(a/4.0)
-        else:          # If this is a Julian date:
-            a=0; b=0
-                
-    jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day + b - 1524.5
+            cent_1 = np.floor(year/100.0)               # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
+            jd    += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
     
     return jd
 
@@ -530,22 +527,27 @@ if __name__ == '__main__':
     import colored_traceback
     colored_traceback.add_hook()
     
-    print('   1J: ', julian_day(1,1,1.0))
-    print('   1G: ', julian_day(1,1,1.0, julian=False))
+    print('JD for -4712: ', julian_day(-4712,1,1.5))
+    print('JD for -1000: ', julian_day(-1000,1,1.0))
+    print('JD for    -1: ', julian_day(-1,1,1.0))
+    print('JD for     0: ', julian_day(0,1,1.0))
     print()
-    print('1581:  ', julian_day(1581,1,1.0))
-    print('1582:  ', julian_day(1582,1,1.0))
+    print('JD for    1J: ', julian_day(1,1,1.0))
+    print('JD for    1G: ', julian_day(1,1,1.0, julian=False))
     print()
-    print('1582:  ', julian_day(1582,12,30.0))
-    print('1582:  ', julian_day(1582,12,31.0))
-    print('1583:  ', julian_day(1583,1,1.0))
-    print('1583:  ', julian_day(1583,1,2.0))
+    print('JD for 1581:  ', julian_day(1581,1,1.0))
+    print('JD for 1582:  ', julian_day(1582,1,1.0))
     print()
-    print('1584:  ', julian_day(1584,1,1.0))
-    print('1585:  ', julian_day(1585,1,1.0))
+    print('JD for 1582:  ', julian_day(1582,12,30.0))
+    print('JD for 1582:  ', julian_day(1582,12,31.0))
+    print('JD for 1583:  ', julian_day(1583,1,1.0))
+    print('JD for 1583:  ', julian_day(1583,1,2.0))
     print()
-    print('2000G: ', julian_day(2000,1,1.0))
-    print('2000J: ', julian_day(2000,1,1.0, julian=True))
+    print('JD for 1584:  ', julian_day(1584,1,1.0))
+    print('JD for 1585:  ', julian_day(1585,1,1.0))
+    print()
+    print('JD for 2000G: ', julian_day(2000,1,1.0))
+    print('JD for 2000J: ', julian_day(2000,1,1.0, julian=True))
     
     years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
     months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
@@ -557,3 +559,30 @@ if __name__ == '__main__':
     # JDs = julian_day(years,months,days, julian=True)
     for iter in range(len(JDs)):
         print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
+    
+    
+    print()
+    print()
+    print('Date for JD=0.0:                    ', jd2ymd(0.0))
+    print('Date for JD=0.0001:                 ', jd2ymd(0.0001))
+    print('Date for JD=1355807.5:              ', jd2ymd(1355807.5))
+    print('Date for JD=1684532.5:              ', jd2ymd(1684532.5))
+    print('Date for JD=1720692.5:              ', jd2ymd(1720692.5))
+    print('Date for JD=1721057.5:              ', jd2ymd(1721057.5))
+    print()
+    print('Date for JD=1721423.5:              ', jd2ymd(1721423.5))
+#    print('Date for JD=1721423.5 (Gregorian):  ', jd2ymd(1721423.5, julian=False))
+    print()
+    print('Date for JD=2298152.5:              ', jd2ymd(2298152.5))
+    print('Date for JD=2299160.0:              ', jd2ymd(2299160.0))
+    print('Date for JD=2299161.0:              ', jd2ymd(2299161.0))
+    print('Date for JD=2299238.5:              ', jd2ymd(2299238.5))
+    print('Date for JD=2299247.5:              ', jd2ymd(2299247.5))
+    print('Date for JD=2301795.5:              ', jd2ymd(2301795.5))
+    print()
+    print('Date for JD=2451544.5:              ', jd2ymd(2451544.5))
+#    print('Date for JD=2451544.5 (Julian):     ', jd2ymd(2451544.5, julian=True))
+    print('Date for JD=2459526.94695:          ', jd2ymd(2459526.94695))
+    print('Date for JD=2459215.54238:          ', jd2ymd(2459215.54238))
+    print()
+    
