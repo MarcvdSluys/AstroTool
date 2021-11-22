@@ -134,11 +134,13 @@ def date_time2jd(year,month,day, hour,minute,second):
 
 
 
-def jd2ymd(jd):
+def jd2ymd(jd, jd_start_greg=2299160.5):
     """Compute the calendar date from a given Julian Day.
     
     Args:
       jd (double):  Julian day (days).
+      jd_start_greg (double):  the JD of the start of the Gregorian calendar
+                               (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
       tuple (int,int,double):  Tuple containing (year, month, day):
@@ -160,15 +162,15 @@ def jd2ymd(jd):
     if np.ndim(jd05) > 0:  # Array-like
         jd05 = np.asarray(jd05)  # Ensure we have a numpy.ndarray
         
-        # If jd05 > 2299160, use the Gregorian calendar:
-        sel         = jd05 > 2299160  # Select the Gregorian cases
+        # If jd05 >= jd_start_greg, use the Gregorian calendar:
+        sel         = jd05 >= jd_start_greg  # Select the Gregorian cases
         cent_5      = np.zeros(np.shape(jd05))
         cent_5[sel] = np.floor((jd05[sel]-1867216.25)/36524.25)   # Gregorian centuries since 400-03-01
         jd05[sel]  += 1 + cent_5[sel] - np.floor(cent_5[sel]/4.)  # Offset Julian-Gregorian
         
     else:                  # If we have a scalar
         
-        if jd05 > 2299160:  # Correction for the Gregorian calendar:
+        if jd05 >= jd_start_greg:  # Correction for the Gregorian calendar:
             cent_5 = np.floor((jd05-1867216.25)/36524.25)  # Gregorian centuries since 400-03-01
             jd05  += 1 + cent_5 - np.floor(cent_5/4.)      # Offset Julian-Gregorian
     
@@ -183,12 +185,12 @@ def jd2ymd(jd):
     if np.ndim(mnt0) > 0:  # Array-like
         mnt0 = np.asarray(mnt0)  # Ensure we have a numpy.ndarray
         month = np.zeros(np.shape(mnt0)).astype(int)
-        month[mnt0  < 14] = (mnt0[mnt0 < 14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
-        month[mnt0 >= 14] = (mnt0[mnt0 > 13] - 13)  # Month Jan,Dec: 14,15 -> 1,2
+        month[mnt0 <  14] = (mnt0[mnt0 <  14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
+        month[mnt0 >= 14] = (mnt0[mnt0 >= 14] - 13)  # Month Jan,Dec: 14,15 -> 1,2
         
         year = np.zeros(np.shape(month)).astype(int)
-        year[month  > 2] = (yr0[month > 2] - 4716)  # Year since -4716 CE -> CE
-        year[month <= 2] = (yr0[month < 3] - 4715)
+        year[month >  2] = (yr0[month >  2] - 4716)  # Year since -4716 CE -> CE
+        year[month <= 2] = (yr0[month <= 2] - 4715)
         
     else:                  # If we have a scalar
         if mnt0 < 14:  # March - December:
@@ -566,7 +568,7 @@ if __name__ == '__main__':
     print('Date for JD=1721057.5:              ', jd2ymd(1721057.5))
     print()
     print('Date for JD=1721423.5:              ', jd2ymd(1721423.5))
-#    print('Date for JD=1721423.5 (Gregorian):  ', jd2ymd(1721423.5, julian=False))
+    print('Date for JD=1721423.5 (Gregorian):  ', jd2ymd(1721423.5, jd_start_greg=0))
     print()
     print('Date for JD=2298152.5:              ', jd2ymd(2298152.5))
     print('Date for JD=2299160.0:              ', jd2ymd(2299160.0))
@@ -576,7 +578,7 @@ if __name__ == '__main__':
     print('Date for JD=2301795.5:              ', jd2ymd(2301795.5))
     print()
     print('Date for JD=2451544.5:              ', jd2ymd(2451544.5))
-#    print('Date for JD=2451544.5 (Julian):     ', jd2ymd(2451544.5, julian=True))
+    print('Date for JD=2451544.5 (Julian):     ', jd2ymd(2451544.5, jd_start_greg=np.inf))
     print('Date for JD=2459526.94695:          ', jd2ymd(2459526.94695))
     print('Date for JD=2459215.54238:          ', jd2ymd(2459215.54238))
     print()
