@@ -39,6 +39,7 @@ def julian_day(year,month,day, jd_start_greg=2299160.5):
       year (int):              Year CE (UT).  Note that year=0 = 1 BCE.
       month (int):             Month number of year (UT; 1-12).
       day (double):            Day of month with fraction (UT; 1.0-31.999).
+      
       jd_start_greg (double):  JD of the start of the Gregorian calendar
                                (optional; default=2299160.5 = 1582-10-15.0).
     
@@ -53,10 +54,10 @@ def julian_day(year,month,day, jd_start_greg=2299160.5):
     """
     
     if np.ndim(month) > 0:  # Array-like
-        # Ensure we have numpy.ndarrays:
-        year  = np.asarray(year)
-        month = np.asarray(month)
-        day   = np.asarray(day)
+        # Ensure we have numpy.ndarrays and make a copy in order not to change the input arrays:
+        year  = np.asarray(np.copy(year))
+        month = np.asarray(np.copy(month))
+        day   = np.asarray(np.copy(day))
         
         # Jan and Feb are month 13 and 14 of the previous year:
         year[month <= 2]  -= 1
@@ -77,7 +78,7 @@ def julian_day(year,month,day, jd_start_greg=2299160.5):
             year -= 1
             month += 12
         
-            # JD for the Julian calendar:
+        # JD for the Julian calendar:
         jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
         
         if jd >= jd_start_greg:  # If this is a Gregorian date:
