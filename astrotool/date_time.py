@@ -154,54 +154,49 @@ def jd2ymd(jd):
     
     """
     
-    z = np.floor(jd+0.5)
-    f = jd + 0.5 - z
+    jd05 = np.floor(jd+0.5)  # Julian day + 0.5: .0 at midnight
+    f_day = jd + 0.5 - jd05  # Fraction of the day (=time/24)
     
-    if np.ndim(z) > 0:  # Array-like
-        z = np.asarray(z)  # Ensure we have a numpy.ndarray
-        a = z
+    if np.ndim(jd05) > 0:  # Array-like
+        jd05 = np.asarray(jd05)  # Ensure we have a numpy.ndarray
         
-        # If z >= 2299161, use the Gregorian calendar:
-        sel        = (z >= 2299161)
-        alpha      = np.zeros(np.shape(z))
-        alpha[sel] = np.floor((z[sel]-1867216.25)/36524.25)
-        a[sel]     = z[sel] + 1 + alpha[sel] - np.floor(alpha[sel]/4.)
+        # If jd05 > 2299160, use the Gregorian calendar:
+        sel         = jd05 > 2299160  # Select the Gregorian cases
+        cent_5      = np.zeros(np.shape(jd05))
+        cent_5[sel] = np.floor((jd05[sel]-1867216.25)/36524.25)   # Gregorian centuries since 400-03-01
+        jd05[sel]  += 1 + cent_5[sel] - np.floor(cent_5[sel]/4.)  # Offset Julian-Gregorian
         
-    else:                       # If we have a scalar
+    else:                  # If we have a scalar
         
-        if z < 2299161:    # Use the Julian calendar
-            a = z
-        else:              # Use the Gregorian calendar
-            alpha = np.floor((z-1867216.25)/36524.25)
-            a = z + 1 + alpha - np.floor(alpha/4.)
+        if jd05 > 2299160:  # Correction for the Gregorian calendar:
+            cent_5 = np.floor((jd05-1867216.25)/36524.25)  # Gregorian centuries since 400-03-01
+            jd05  += 1 + cent_5 - np.floor(cent_5/4.)      # Offset Julian-Gregorian
     
     
-    b = a + 1524
-    c = np.floor((b - 122.1)/365.25)
-    d = np.floor(365.25*c)
-    e = np.floor((b-d)/30.6001)
-    day = b - d - np.floor(30.6001*e) + f
+    jd05 += 1524                           # Set JD=0 to -4712-01-01
+    yr0 = np.floor((jd05 - 122.1)/365.25)  # Year since -4716 CE
+    day0 = np.floor(365.25*yr0)            # Julian days since -4716 CE
+    mnt0 = np.floor((jd05-day0)/30.6001)   # Month number + 1 (4-15 = Mar-Feb)
     
-    if np.ndim(e) > 0:  # Array-like
-        e = np.asarray(e)  # Ensure we have a numpy.ndarray
-        month = np.zeros(np.shape(e)).astype(int)
-        month[e  < 14] = (e[e  < 14] -  1)
-        month[e >= 14] = (e[e >= 14] - 13)
+    day = jd05 - day0 - np.floor(30.6001*mnt0) + f_day  # Day of month + fraction
+    
+    if np.ndim(mnt0) > 0:  # Array-like
+        mnt0 = np.asarray(mnt0)  # Ensure we have a numpy.ndarray
+        month = np.zeros(np.shape(mnt0)).astype(int)
+        month[mnt0  < 14] = (mnt0[mnt0 < 14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
+        month[mnt0 >= 14] = (mnt0[mnt0 > 13] - 13)  # Month Jan,Dec: 14,15 -> 1,2
         
         year = np.zeros(np.shape(month)).astype(int)
-        year[month  > 2] = (c[month  > 2] - 4716)
-        year[month <= 2] = (c[month <= 2] - 4715)
+        year[month  > 2] = (yr0[month > 2] - 4716)  # Year since -4716 CE -> CE
+        year[month <= 2] = (yr0[month < 3] - 4715)
         
-    else:                       # If we have a scalar
-        if e < 14:
-            month = int(e - 1)
-        else:
-            month = int(e - 13)
-            
-        if month > 2:
-            year = int(c - 4716)
-        else:
-            year = int(c - 4715)
+    else:                  # If we have a scalar
+        if mnt0 < 14:  # March - December:
+            month = int(mnt0 -  1)   # Month Mar-Dec = 3-12
+            year  = int(yr0 - 4716)  # Year CE
+        else:          # January, February:
+            month = int(mnt0 - 13)   # Month Jan,Feb = 1,2
+            year  = int(yr0 - 4715)  # Year CE
         
     return year,month,day
 
@@ -586,3 +581,7 @@ if __name__ == '__main__':
     print('Date for JD=2459215.54238:          ', jd2ymd(2459215.54238))
     print()
     
+    jds = np.arange(26)*1e5
+    yrs,mnts,dys = jd2ymd(jds)
+    for iter in range(len(jds)):
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jds[iter], yrs[iter], mnts[iter], dys[iter]))
