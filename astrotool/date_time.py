@@ -41,6 +41,7 @@ def julian_day(year,month,day, julian=None):
       day (double):  Day of month with fraction (UT; 1.0-31.999).
       julian (bool):  Force Julian (True) or Gregorian calendar (False), optional.
                       Default: None: Julian before 1583, else Gregorian.
+                      If an array, values must be True or False.
     
     Returns:
       double:  jd: Julian day (days).
@@ -58,10 +59,21 @@ def julian_day(year,month,day, julian=None):
         month = np.asarray(month)
         day   = np.asarray(day)
         
-        year0 = year
-        
+        # Determine whether the Julian or Gregorian calendar should be used:
+        if julian is None:     # Not provided by user -> determine from date
+            gregorian = year > 1582  # False if <1583, True if >1582
+        else:  # julian was provided.  Could be a scalar or an array:
+            # Want julian to be an array:
+            if np.ndim(julian) == 0:  # julian is a scalar -> want an array with identical values
+                if julian:  # julian is True, gregorian must be false:
+                    gregorian = np.zeros(len(month)).astype(dtype=bool)  # array of zeros -> Falses
+                else:
+                    gregorian = np.ones(len(month)).astype(dtype=bool)   # array of ones -> Trues
+            else:  # julian is an array.  Values must be True or False.
+                gregorian = np.logical_not(julian)  # Flip True and False
+                
         # Jan and Feb are month 13 and 14 of the previous year:
-        year[month <= 2] -= 1
+        year[month <= 2]  -= 1
         month[month <= 2] += 12
         
         # Assume a Julian date by default:
@@ -69,8 +81,8 @@ def julian_day(year,month,day, julian=None):
         b = np.zeros(np.shape(month))
         
         # Assume a Gregorian date for years after 1582:
-        a[year0 > 1582] = np.floor(year[year0 > 1582]/100.0)
-        b[year0 > 1582] = 2 - a[year0 > 1582] + np.floor(a[year0 > 1582]/4.0)
+        a[gregorian] = np.floor(year[gregorian]/100.0)
+        b[gregorian] = 2 - a[gregorian] + np.floor(a[gregorian]/4.0)
         
     else:                           # If we have a scalar
         
@@ -515,6 +527,9 @@ def weekday_en_abbr_from_datetime(datetime):
 
 # Test code:
 if __name__ == '__main__':
+    import colored_traceback
+    colored_traceback.add_hook()
+    
     print('   1J: ', julian_day(1,1,1.0))
     print('   1G: ', julian_day(1,1,1.0, julian=False))
     print()
@@ -532,3 +547,13 @@ if __name__ == '__main__':
     print('2000G: ', julian_day(2000,1,1.0))
     print('2000J: ', julian_day(2000,1,1.0, julian=True))
     
+    years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
+    months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
+    days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
+    julians = [True,False, True,True, True,True,False,False, False,False, False,True]
+    letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
+    
+    JDs = julian_day(years,months,days, julian=julians)
+    # JDs = julian_day(years,months,days, julian=True)
+    for iter in range(len(JDs)):
+        print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
