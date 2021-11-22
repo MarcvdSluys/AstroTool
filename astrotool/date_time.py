@@ -32,13 +32,15 @@ import numpy as np
 from .constants import pi2, jd1820,jd2000
 
 
-def julian_day(year,month,day):
+def julian_day(year,month,day, julian=None):
     """Compute the Julian Day for a given year, month and day.
     
     Args:
       year (int):    Year CE (UT).  Note that year=0 = 1 BCE.
       month (int):   Month number of year (UT; 1-12).
       day (double):  Day of month with fraction (UT; 1.0-31.999).
+      julian (bool):  Force Julian (True) or Gregorian calendar (False), optional.
+                      Default: None: Julian before 1583, else Gregorian.
     
     Returns:
       double:  jd: Julian day (days).
@@ -55,6 +57,7 @@ def julian_day(year,month,day):
         year  = np.asarray(year)
         month = np.asarray(month)
         day   = np.asarray(day)
+        
         year0 = year
         
         # Jan and Feb are month 13 and 14 of the previous year:
@@ -71,18 +74,23 @@ def julian_day(year,month,day):
         
     else:                           # If we have a scalar
         
-        year0 = year
+        # Determine whether the Julian or Gregorian calendar should be used:
+        if julian is None:     # Not provided by user -> determine from date
+            gregorian = True                    # Assume a Gregorian date by default
+            if year < 1583:  gregorian = False  # Assume a Julian date before 1583
+        else:                  # Use as specified in interface
+            gregorian = not julian
         
         # Jan and Feb are month 13 and 14 of the previous year:
         if(month <= 2):
             year -= 1
             month += 12
             
-            a=0; b=0              # Assume a Julian date by default
-            
-        if(year0 > 1582):     # Assume a Gregorian date for years after 1582
+        if gregorian:  # If this is a Gregorian date:
             a = np.floor(year/100.0)
             b = 2 - a + np.floor(a/4.0)
+        else:          # If this is a Julian date:
+            a=0; b=0
                 
     jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day + b - 1524.5
     
@@ -507,5 +515,20 @@ def weekday_en_abbr_from_datetime(datetime):
 
 # Test code:
 if __name__ == '__main__':
-    print(julian_day(2000,1,1.0))
+    print('   1J: ', julian_day(1,1,1.0))
+    print('   1G: ', julian_day(1,1,1.0, julian=False))
+    print()
+    print('1581:  ', julian_day(1581,1,1.0))
+    print('1582:  ', julian_day(1582,1,1.0))
+    print()
+    print('1582:  ', julian_day(1582,12,30.0))
+    print('1582:  ', julian_day(1582,12,31.0))
+    print('1583:  ', julian_day(1583,1,1.0))
+    print('1583:  ', julian_day(1583,1,2.0))
+    print()
+    print('1584:  ', julian_day(1584,1,1.0))
+    print('1585:  ', julian_day(1585,1,1.0))
+    print()
+    print('2000G: ', julian_day(2000,1,1.0))
+    print('2000J: ', julian_day(2000,1,1.0, julian=True))
     
