@@ -53,7 +53,7 @@ def julian_day(year,month,day, julian=None):
     
     """
     
-    if(np.ndim(month) > 0):  # Array-like
+    if np.ndim(month) > 0:  # Array-like
         # Ensure we have numpy.ndarrays:
         year  = np.asarray(year)
         month = np.asarray(month)
@@ -94,7 +94,7 @@ def julian_day(year,month,day, julian=None):
             gregorian = not julian
         
         # Jan and Feb are month 13 and 14 of the previous year:
-        if(month <= 2):
+        if month <= 2:
             year -= 1
             month += 12
             
@@ -160,7 +160,7 @@ def jd2ymd(jd):
     z = np.floor(jd+0.5)
     f = jd + 0.5 - z
     
-    if(np.ndim(z) > 0):  # Array-like
+    if np.ndim(z) > 0:  # Array-like
         z = np.asarray(z)  # Ensure we have a numpy.ndarray
         a = z
         
@@ -172,7 +172,7 @@ def jd2ymd(jd):
         
     else:                       # If we have a scalar
         
-        if(z < 2299161):   # Use the Julian calendar
+        if z < 2299161:    # Use the Julian calendar
             a = z
         else:              # Use the Gregorian calendar
             alpha = np.floor((z-1867216.25)/36524.25)
@@ -185,7 +185,7 @@ def jd2ymd(jd):
     e = np.floor((b-d)/30.6001)
     day = b - d - np.floor(30.6001*e) + f
     
-    if(np.ndim(e) > 0):  # Array-like
+    if np.ndim(e) > 0:  # Array-like
         e = np.asarray(e)  # Ensure we have a numpy.ndarray
         month = np.zeros(np.shape(e)).astype(int)
         month[e  < 14] = (e[e  < 14] -  1)
@@ -196,12 +196,12 @@ def jd2ymd(jd):
         year[month <= 2] = (c[month <= 2] - 4715)
         
     else:                       # If we have a scalar
-        if(e < 14):
+        if e < 14:
             month = int(e - 1)
         else:
             month = int(e - 13)
             
-        if(month > 2):
+        if month > 2:
             year = int(c - 4716)
         else:
             year = int(c - 4715)
@@ -317,7 +317,7 @@ def doy_from_ymd(year, month, day):
 
     """
     
-    if(np.ndim(year) > 0):  # Array-like:
+    if np.ndim(year) > 0:  # Array-like:
         # Ensure we have numpy.ndarrays:
         year     = np.asarray(year)
         month    = np.asarray(month)
@@ -349,7 +349,7 @@ def doy_from_datetime(date_time):
       
     """
     
-    if(np.ndim(date_time) > 0):  # Array-like:
+    if np.ndim(date_time) > 0:  # Array-like:
         date_time = np.asarray(date_time).astype('datetime64[ns]')  # Ensure we have an np.ndarray of type datetime64[ns]
         ymd = ymdhms_us_from_datetime64(date_time)
         doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
@@ -464,11 +464,11 @@ def deltat(jd):
     
     year = jd2year(jd)  # Year with fraction for jd of interest
     
-    if(year < years[0]):     # Before -700
+    if year < years[0]:     # Before -700
         jd0 = julian_day(years[0], 1, 1)
         return deltat_1820(jd) - deltat_1820(jd0) + DTvalues[0]
     
-    elif(year > years[-1]):  # in the future
+    elif year > years[-1]:  # in the future
         jd1 = julian_day(years[-1], 1, 1)
         return deltat_1820(jd) - deltat_1820(jd1) + DTvalues[-1]
     

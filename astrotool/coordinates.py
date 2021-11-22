@@ -230,7 +230,7 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     
     # print(dist_gc, dist_gc*rad_gc/rad_tc)
     
-    if(debug):
+    if debug:
         print()
         print('geoc2topoc_ecl():')
         print('%10s  %25s  %25s' % ('', 'rad/km/...','deg'))
