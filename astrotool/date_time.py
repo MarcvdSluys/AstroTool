@@ -331,33 +331,41 @@ def doy_from_datetime(date_time):
 
 
 def jd2tjc(jd):
+    """Obsolescent function.  Use tjc_from_jd() instead."""
+    _warn_obsolesent('jd2tjc', 'tjc_from_jd', rename=True)
+    return tjc_from_jd(jd)
+
+
+def tjc_from_jd(jd):
     """Compute the time in Julian centuries since 2000.0.
     
     Args:
-      jd (float):   Julian day (days).
+      jd (float):  Julian day (days).
     
     Returns:
-      float:  tjc: Time in Julian centuries since 2000.0 (UT).
-
+      float:  Time in Julian centuries since 2000.0 (UT).
     """
     
     return (jd - 2451545.0)/36525
 
 
-
 def jd2tjm(jd):
+    """Obsolescent function.  Use tjm_from_jd() instead."""
+    _warn_obsolesent('jd2tjm', 'tjm_from_jd', rename=True)
+    return tjm_from_jd(jd)
+
+
+def tjm_from_jd(jd):
     """Compute the time in Julian millennia since 2000.0.
     
     Args:
-      jd (float):   Julian day (days).
+      jd (float):  Julian day (days).
     
     Returns:
-      float:  tjm: Time in Julian millennia since 2000.0 (UT).
-
+      float:  Time in Julian millennia since 2000.0 (UT).
     """
     
     return (jd - 2451545.0)/365250
-
 
 
 def gmst(jd):
