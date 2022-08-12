@@ -535,10 +535,10 @@ if __name__ == '__main__':
     days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
     # julians = [True,False, True,True, True,True,False,False, False,False, False,True]
     inf = np.inf
-    jd_start_gregs = [inf,0,  inf,inf, inf,inf,0,0, 0,0, 0,inf]
+    jd_start_gregs1 = [inf,0,  inf,inf, inf,inf,0,0, 0,0, 0,inf]
     letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
     
-    JDs = julian_day(years,months,days, jd_start_greg=jd_start_gregs)
+    JDs = julian_day(years,months,days, jd_start_greg=jd_start_gregs1)
     # JDs = julian_day(years,months,days, jd_start_greg=np.inf)
     for iter in range(len(JDs)):
         print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
@@ -570,9 +570,9 @@ if __name__ == '__main__':
     print()
     
     jds = np.arange(26)*1e5
-    jd_start_gregs = np.zeros(len(jds)) + np.inf
+    jd_start_gregs2 = np.zeros(len(jds)) + np.inf
     # yrs,mnts,dys = jd2ymd(jds)
-    yrs,mnts,dys = jd2ymd(jds, jd_start_greg=jd_start_gregs)
+    yrs,mnts,dys = jd2ymd(jds, jd_start_greg=jd_start_gregs2)
     for iter in range(len(jds)):
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jds[iter], yrs[iter], mnts[iter], dys[iter]))
         
