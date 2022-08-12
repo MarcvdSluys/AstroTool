@@ -21,7 +21,7 @@ by hand, you have to ensure these packages are installed as well.
 
 * Author: Marc van der Sluys
 * Contact: http://astro.ru.nl/~sluys/
-* Licence: [GPLv3+](https://www.gnu.org/licenses/gpl.html)
+* Licence: [EUPL 1.2](https://www.eupl.eu/1.2/en/)
 
 
 ## References ##

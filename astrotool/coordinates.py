@@ -1,7 +1,8 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: EUPL-1.2
 
-#  Copyright (c) 2019-2021  Marc van der Sluys - marc.vandersluys.nl
+#  Copyright (c) 2019-2022  Marc van der Sluys - marc.vandersluys.nl
 #   
 #  This file is part of the AstroTool Python package,
 #  see: http://astro.ru.nl/~sluys/AstroTool/
@@ -10,14 +11,15 @@
 #  University Nijmegen, the Netherlands and the department of Sustainable energy of the HAN University of
 #  applied sciences in Arnhem, the Netherlands.
 #   
-#  This is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#  This is free software: you can redistribute it and/or modify it under the terms of the
+#  European Union Public Licence 1.2 (EUPL 1.2).
 #  
-#  This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#  This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the EU Public Licence for more details.
 #  
-#  You should have received a copy of the GNU General Public License along with this code.  If not, see
-#  <http://www.gnu.org/licenses/>.
+#  You should have received a copy of the European Union Public Licence along with this code.
+#  If not, see <https://www.eupl.eu/1.2/en/>.
 
 
 """Coordinate transformations and related functions for AstroTool."""
