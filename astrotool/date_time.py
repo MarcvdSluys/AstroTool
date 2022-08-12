@@ -40,13 +40,13 @@ def julian_day(year,month,day, jd_start_greg=2299160.5):
     Args:
       year (int):              Year CE (UT).  Note that year=0 = 1 BCE.
       month (int):             Month number of year (UT; 1-12).
-      day (double):            Day of month with fraction (UT; 1.0-31.999).
+      day (float):             Day of month with fraction (UT; 1.0-31.999).
       
-      jd_start_greg (double):  JD of the start of the Gregorian calendar
+      jd_start_greg (float):   JD of the start of the Gregorian calendar
                                (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
-      double:  jd: Julian day (days).
+      float:  jd: Julian day (days).
       
     Notes:
       - Date and time are expressed in UT.
@@ -101,10 +101,10 @@ def date_time2jd(year,month,day, hour,minute,second):
     
       hour (int):       Hour of time of day (UT).
       minute (int):     Minute of hour of time (UT).
-      second (double):  Second of minute of time (UT).
+      second (float):   Second of minute of time (UT).
     
     Returns:
-      double:  jd: Julian day (days).
+      float:  jd: Julian day (days).
     
     Notes:
       - Date and time are expressed in UT.
@@ -122,16 +122,16 @@ def jd2ymd(jd, jd_start_greg=2299160.5):
     """Compute the calendar date from a given Julian Day.
     
     Args:
-      jd (double):  Julian day (days).
-      jd_start_greg (double):  the JD of the start of the Gregorian calendar
+      jd (float):   Julian day (days).
+      jd_start_greg (float):   the JD of the start of the Gregorian calendar
                                (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
-      tuple (int,int,double):  Tuple containing (year, month, day):
+      tuple (int,int,float):   Tuple containing (year, month, day):
     
         - year (int):    Year CE (UT).  Note that year=0 indicates 1 BCE.
         - month (int):   Month number of year (UT; 1-12).
-        - day (double):  Day of month with fraction (UT; 1.0-31.999).
+        - day (float):   Day of month with fraction (UT; 1.0-31.999).
     
     Notes:
       - Date and time are expressed in UT.
@@ -192,10 +192,10 @@ def jd2year(jd):
     """Compute a year with fraction from a given Julian Day.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  Year CE, with decimals.  Note that year=0 indicates 1 BCE.
+      float:  Year CE, with decimals.  Note that year=0 indicates 1 BCE.
     
     """
     
@@ -212,10 +212,10 @@ def jd2date_time(jd):
     """Compute the date and time from a given Julian Day.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      tuple (int,int,int, int,int,double):  tuple containing (year CE, month, day,  hour, minute, second):
+      tuple (int,int,int, int,int,float):   tuple containing (year CE, month, day,  hour, minute, second):
     
       - year   (int):     Year CE (UT).  Note that year=0 = 1 BCE.
       - month  (int):     Month number of year (UT; 1-12).
@@ -223,7 +223,7 @@ def jd2date_time(jd):
     
       - hour   (int):     Hour of time of day (UT).
       - minute (int):     Minute of hour of time (UT).
-      - second (double):  Second of minute of time (UT).
+      - second (float):   Second of minute of time (UT).
         
     Note:
       - uses jd2ymd().
@@ -257,10 +257,10 @@ def fix_date_time(year,month,day, hour,minute,second):
     
       hour (int):       Hour of time of day.
       minute (int):     Minute of hour of time.
-      second (double):  Second of minute of time.
+      second (float):   Second of minute of time.
     
     Returns:
-      tuple (int,int,int, int,int,double):  tuple containing (year CE, month, day,  hour, minute, second):
+      tuple (int,int,int, int,int,float):   tuple containing (year CE, month, day,  hour, minute, second):
     
       - year (int):       Year CE.  Note that year=0 = 1 BCE.
       - month (int):      Month number of year (UT; 1-12).
@@ -268,7 +268,7 @@ def fix_date_time(year,month,day, hour,minute,second):
     
       - hour (int):       Hour of time of day (0-23).
       - minute (int):     Minute of hour of time (0-59).
-      - second (double):  Second of minute of time (0.000-59.999).
+      - second (float):   Second of minute of time (0.000-59.999).
         
     Note:
       - uses date_time2jd() and jd2date_time().
@@ -343,10 +343,10 @@ def jd2tjc(jd):
     """Compute the time in Julian centuries since 2000.0.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  tjc: Time in Julian centuries since 2000.0 (UT).
+      float:  tjc: Time in Julian centuries since 2000.0 (UT).
 
     """
     
@@ -358,10 +358,10 @@ def jd2tjm(jd):
     """Compute the time in Julian millennia since 2000.0.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  tjm: Time in Julian millennia since 2000.0 (UT).
+      float:  tjm: Time in Julian millennia since 2000.0 (UT).
 
     """
     
@@ -373,10 +373,10 @@ def gmst(jd):
     """Calculate Greenwich Mean Sidereal Time for any instant, in radians.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  gmst: Greenwich mean sidereal time (rad).
+      float:  gmst: Greenwich mean sidereal time (rad).
     
     References:
       - Explanatory Supplement to the Astronomical Almanac, 3rd ed, Eq. 6.66 (2012).
@@ -401,10 +401,10 @@ def deltat_1820(jd):
     DeltaT=12s in 1820.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  Delta T (s).
+      float:  Delta T (s).
     
     References:
       - `Extrapolation of Delta T <http://hemel.waarnemen.com/Computing/deltat.html>`_.
@@ -424,10 +424,10 @@ def deltat(jd):
       minimum of the parabola is DeltaT=12s in 1820.
     
     Args:
-      jd (double):  Julian day (days).
+      jd (float):   Julian day (days).
     
     Returns:
-      double:  Delta T (s).
+      float:  Delta T (s).
     
     References:
       - `International Earth Rotation and Reference Systems Service <ftp://maia.usno.navy.mil/ser7/deltat.data>`_ of the U.S. Naval Observatory.
