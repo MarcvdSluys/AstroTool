@@ -30,7 +30,7 @@ if __name__ == '__main__' and __package__ is None:
     __package__ = 'astrotool'
 
 # Modules:
-import numpy as np
+import numpy as _np
 from .constants import pi2, jd1820,jd2000
 
 
@@ -60,23 +60,23 @@ def jd_from_date(year,month,day, jd_start_greg=2299160.5):
     """
     
     # Copy and typecast input to numpy.ndarrays:
-    year  = np.asarray(np.copy(year))
-    month = np.asarray(np.copy(month))
-    day   = np.asarray(np.copy(day))
+    year  = _np.asarray(_np.copy(year))
+    month = _np.asarray(_np.copy(month))
+    day   = _np.asarray(_np.copy(day))
     
     # Jan/Feb are month 13/14 of the previous year:
     year[month  <= 2] -= 1
     month[month <= 2] += 12
     
     # JD for Julian calendar (ensure it always is an array):
-    jd = np.asarray(np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5)
+    jd = _np.asarray(_np.floor(365.25*(year+4716)) + _np.floor(30.6001*(month+1)) + day - 1524.5)
     
     # Apply correction for Gregorian calendar:
-    sel      = jd >= jd_start_greg                # Select cases for Greg.cal.
-    cent_1   = np.floor(year[sel]/100.0)          # Count: (century - 1)
-    jd[sel] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian
+    sel      = jd >= jd_start_greg                 # Select cases for Greg.cal.
+    cent_1   = _np.floor(year[sel]/100.0)          # Count: (century - 1)
+    jd[sel] += 2 - cent_1 + _np.floor(cent_1/4.0)  # Offset Julian-Gregorian
     
-    return np.squeeze(jd)  # Turn array back into scalar if needed
+    return _np.squeeze(jd)  # Turn array back into scalar if needed
 
 
 def date_time2jd(year,month,day, hour,minute,second):
@@ -137,34 +137,34 @@ def date_from_jd(jd, jd_start_greg=2299160.5):
         noon on the first day of the month.
     """
     
-    jd  = np.asarray(np.copy(jd))    # Copy and typecast to numpy.ndarray
-    if jd.ndim == 0:  jd = jd[None]  # Create an array from a scalar if needed
+    jd  = _np.asarray(_np.copy(jd))    # Copy and typecast to numpy.ndarray
+    if jd.ndim == 0:  jd = jd[None]    # Create an array from a scalar if needed
     
-    jd05  = np.floor(jd+0.5)  # Julian day + 0.5 -> .0 at midnight (asarray)
-    f_day = jd + 0.5 - jd05   # Time as fraction of the day (=time/24)
+    jd05  = _np.floor(jd+0.5)  # Julian day + 0.5 -> .0 at midnight (asarray)
+    f_day = jd + 0.5 - jd05    # Time as fraction of the day (=time/24)
     
     # If jd05 >= jd_start_greg, use the Gregorian calendar:
-    sel         = jd05 >= jd_start_greg  # Select the Gregorian cases
-    cent_5      = np.zeros_like(jd05)    # Filled with 0's
-    cent_5[sel] = np.floor((jd05[sel]-1867216.25)/36524.25)   # Count Greg.cent. - 5
-    jd05[sel]  += 1 + cent_5[sel] - np.floor(cent_5[sel]/4.)  # Offset Jul.-Greg.
+    sel         = jd05 >= jd_start_greg   # Select the Gregorian cases
+    cent_5      = _np.zeros_like(jd05)    # Filled with 0's
+    cent_5[sel] = _np.floor((jd05[sel]-1867216.25)/36524.25)   # Count Greg.cent. - 5
+    jd05[sel]  += 1 + cent_5[sel] - _np.floor(cent_5[sel]/4.)  # Offset Jul.-Greg.
     
-    jd05 += 1524                             # Set JD=0 to -4712-01-01
-    yr0   = np.floor((jd05 - 122.1)/365.25)  # Year since -4716 CE
-    day0  = np.floor(365.25*yr0)             # Julian days since -4716 CE
-    mnt0  = np.floor((jd05-day0)/30.6001)    # Month number + 1 (4-15 = Mar-Feb)
+    jd05 += 1524                              # Set JD=0 to -4712-01-01
+    yr0   = _np.floor((jd05 - 122.1)/365.25)  # Year since -4716 CE
+    day0  = _np.floor(365.25*yr0)             # Julian days since -4716 CE
+    mnt0  = _np.floor((jd05-day0)/30.6001)    # Month number + 1 (4-15 = Mar-Feb)
     
-    day = jd05 - day0 - np.floor(30.6001*mnt0) + f_day  # Day of mnt + frac. (as.ar.)
+    day = jd05 - day0 - _np.floor(30.6001*mnt0) + f_day  # Day of mnt + frac. (as.ar.)
     
-    month = np.zeros_like(mnt0).astype(int)
+    month = _np.zeros_like(mnt0).astype(int)
     month[mnt0 <  14] = (mnt0[mnt0 <  14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
     month[mnt0 >= 14] = (mnt0[mnt0 >= 14] - 13)  # Month Jan,Dec: 14,15 -> 1,2
     
-    year = np.zeros_like(month).astype(int)
+    year = _np.zeros_like(month).astype(int)
     year[month >  2] = (yr0[month >  2] - 4716)  # Year since -4716 CE -> CE
     year[month <= 2] = (yr0[month <= 2] - 4715)
     
-    return np.squeeze(year),np.squeeze(month),np.squeeze(day)  # Arrays -> "scalars"
+    return _np.squeeze(year),_np.squeeze(month),_np.squeeze(day)  # Arrays -> "scalars"
 
 
 
@@ -197,10 +197,10 @@ def date_time_from_jd(jd, jd_start_greg=2299160.5):
     """
     
     year,month,day_f = date_from_jd(jd, jd_start_greg)  # Day with fraction
-    day    = np.floor(day_f).astype(int)  # Integer day
-    time   = (day_f-day)*24               # Time of day in hours
-    hour   = np.floor(time).astype(int)
-    minute = np.floor((time-hour)*60).astype(int)
+    day    = _np.floor(day_f).astype(int)  # Integer day
+    time   = (day_f-day)*24                # Time of day in hours
+    hour   = _np.floor(time).astype(int)
+    minute = _np.floor((time-hour)*60).astype(int)
     second = (time-hour-minute/60)*3600
     
     return year,month,day, hour,minute,second
@@ -222,11 +222,11 @@ def year_from_jd(jd):
       float:  Year CE, with decimals.  Note that year=0 indicates 1 BCE, year=-1 2 BCE, etc.
     """
     
-    year,month,day = date_from_jd(jd)        # Compute current year
-    ones = np.ones_like(year)                # Fill "array" with shape of year w. 1s
-    jd0  = jd_from_date(year,   ones, ones)  # Jan 1 of current year
-    jd1  = jd_from_date(year+1, ones, ones)  # Jan 1 of next year
-    dy   = (jd-jd0) / (jd1-jd0)              # Lin. interpol. for fractional year
+    year,month,day = date_from_jd(jd)         # Compute current year
+    ones = _np.ones_like(year)                # Fill "array" with shape of year w. 1s
+    jd0  = jd_from_date(year,   ones, ones)   # Jan 1 of current year
+    jd1  = jd_from_date(year+1, ones, ones)   # Jan 1 of next year
+    dy   = (jd-jd0) / (jd1-jd0)               # Lin. interpol. for fractional year
     
     return year + dy
 
@@ -286,22 +286,22 @@ def doy_from_ymd(year, month, day):
 
     """
     
-    if np.ndim(year) > 0:  # Array-like:
+    if _np.ndim(year) > 0:  # Array-like:
         # Ensure we have numpy.ndarrays:
-        year     = np.asarray(year)
-        month    = np.asarray(month)
-        day      = np.asarray(day)
+        year     = _np.asarray(year)
+        month    = _np.asarray(month)
+        day      = _np.asarray(day)
         
-        ones     = np.ones(year.shape)  # Array for first month and first day
+        ones     = _np.ones(year.shape)  # Array for first month and first day
         
-        today    = date_time2jd(year, month, np.floor(day).astype(int),  0, 0, 0.0)
+        today    = date_time2jd(year, month, _np.floor(day).astype(int),  0, 0, 0.0)
         JanFirst = date_time2jd(year, ones, ones,  0, 0, 0.0)
-        doy      = np.floor(today - JanFirst + 1).astype(int)
+        doy      = _np.floor(today - JanFirst + 1).astype(int)
         
     else:
-        today    = date_time2jd(year, month, int(np.floor(day)),  0, 0, 0.0)
+        today    = date_time2jd(year, month, int(_np.floor(day)),  0, 0, 0.0)
         JanFirst = date_time2jd(year, 1, 1,  0, 0, 0.0)
-        doy      = int(np.floor(today - JanFirst + 1))
+        doy      = int(_np.floor(today - JanFirst + 1))
     
     return doy
 
@@ -318,8 +318,8 @@ def doy_from_datetime(date_time):
       
     """
     
-    if np.ndim(date_time) > 0:  # Array-like:
-        date_time = np.asarray(date_time).astype('datetime64[ns]')  # Ensure we have an np.ndarray of type datetime64[ns]
+    if _np.ndim(date_time) > 0:  # Array-like:
+        date_time = _np.asarray(date_time).astype('datetime64[ns]')  # Ensure we have an np.ndarray of type datetime64[ns]
         ymd = ymdhms_us_from_datetime64(date_time)
         doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
         
@@ -450,7 +450,7 @@ def deltat(jd):
         return deltat_1820(jd) - deltat_1820(jd1) + DTvalues[-1]
     
     else:                    # linear interpolation from known data
-        return np.interp(year, years, DTvalues)
+        return _np.interp(year, years, DTvalues)
 
 
 
@@ -470,7 +470,7 @@ def ymdhms_us_from_datetime64(dt64):
     """
     
     # Allocate output:
-    out = np.empty(dt64.shape + (7,), dtype='u4')
+    out = _np.empty(dt64.shape + (7,), dtype='u4')
     
     # Decompose calendar floors:
     Y, M, D, h, m, s = [dt64.astype(f'M8[{x}]') for x in 'YMDhms']
@@ -543,7 +543,7 @@ if __name__ == '__main__':
     print('JD for 1585:  ', jd_from_date(1585,1,1.0))
     print()
     print('JD for 2000G: ', jd_from_date(2000,1,1.0))
-    print('JD for 2000J: ', jd_from_date(2000,1,1.0, jd_start_greg=np.inf))
+    print('JD for 2000J: ', jd_from_date(2000,1,1.0, jd_start_greg=_np.inf))
     print()
     print('JD for 2000:  ', jd_from_date_time(2000,1,1.0, 12,0,0))
     
@@ -553,12 +553,12 @@ if __name__ == '__main__':
     _months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
     _days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
     # julians = [True,False, True,True, True,True,False,False, False,False, False,True]
-    _inf = np.inf
+    _inf = _np.inf
     _jd_start_gregs1 = [_inf,0,  _inf,_inf, _inf,_inf,0,0, 0,0, 0,_inf]
     _letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
     
     _JDs = jd_from_date(_years,_months,_days, jd_start_greg=_jd_start_gregs1)
-    # _JDs = jd_from_date(_years,_months,_days, _jd_start_greg=np.inf)
+    # _JDs = jd_from_date(_years,_months,_days, _jd_start_greg=_np.inf)
     for _iter in range(len(_JDs)):
         print('%4i%2s  %9.1f' % (_years[_iter],_letters[_iter], _JDs[_iter]))
         
@@ -582,14 +582,14 @@ if __name__ == '__main__':
     print('Date for JD=2301795.5:              ', *date_from_jd(2301795.5))
     print()
     print('Date for JD=2451544.5:              ', *date_from_jd(2451544.5))
-    print('Date for JD=2451544.5 (Julian):     ', *date_from_jd(2451544.5, jd_start_greg=np.inf))
+    print('Date for JD=2451544.5 (Julian):     ', *date_from_jd(2451544.5, jd_start_greg=_np.inf))
     print('Date for JD=2459526.94695:          ', *date_from_jd(2459526.94695))
     print('Date for JD=2459215.54238:          ', *date_from_jd(2459215.54238))
     print()
     
     print('\ndate_from_jd(), array:')
-    _jds = np.arange(26)*1e5
-    _jd_start_gregs2 = np.zeros(len(_jds)) + np.inf
+    _jds = _np.arange(26)*1e5
+    _jd_start_gregs2 = _np.zeros(len(_jds)) + _np.inf
     # yrs,mnts,dys = date_from_jd(jds)
     _yrs,_mnts,_dys = date_from_jd(_jds, jd_start_greg=_jd_start_gregs2)
     for _iter in range(len(_jds)):
