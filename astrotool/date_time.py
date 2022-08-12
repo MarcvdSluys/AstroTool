@@ -36,7 +36,7 @@ from .constants import pi2, jd1820,jd2000
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
     """Obsolescent function.  Use jd_from_date() instead."""
-    warn_obsolesent('julian_day', 'jd_from_date', rename=True)
+    _warn_obsolesent('julian_day', 'jd_from_date', rename=True)
     return jd_from_date(year,month,day, jd_start_greg)
 
 
@@ -80,8 +80,8 @@ def jd_from_date(year,month,day, jd_start_greg=2299160.5):
 
 
 def date_time2jd(year,month,day, hour,minute,second):
-    """Obsolescent function.  Use jd_from_date() instead."""
-    warn_obsolesent('date_time2jd', 'jd_from_date_time', rename=True, extra=True)
+    """Obsolescent function.  Use jd_from_date_time() instead."""
+    _warn_obsolesent('date_time2jd', 'jd_from_date_time', rename=True, extra=True)
     return jd_from_date_time(year,month,day, hour,minute,second)
 
 
@@ -112,72 +112,59 @@ def jd_from_date_time(year,month,day, hour,minute,second, jd_start_greg=2299160.
 
 
 def jd2ymd(jd, jd_start_greg=2299160.5):
+    """Obsolescent function.  Use date_from_jd() instead."""
+    _warn_obsolesent('jd2ymd', 'date_from_jd', rename=True)
+    return date_from_jd(jd, jd_start_greg)
+
+
+def date_from_jd(jd, jd_start_greg=2299160.5):
     """Compute the calendar date from a given Julian Day.
     
     Args:
-      jd (float):   Julian day (days).
-      jd_start_greg (float):   the JD of the start of the Gregorian calendar
-                               (optional; default=2299160.5 = 1582-10-15.0).
+      jd (float):             Julian day (days).
+      jd_start_greg (float):  JD of start of Gregorian calendar (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
-      tuple (int,int,float):   Tuple containing (year, month, day):
+      tuple (int,int,float):  Tuple containing (year, month, day):
     
-        - year (int):    Year CE (UT).  Note that year=0 indicates 1 BCE.
-        - month (int):   Month number of year (UT; 1-12).
-        - day (float):   Day of month with fraction (UT; 1.0-31.999).
+        - year (int):   Year CE.  Note that year=0 indicates 1 BCE.
+        - month (int):  Month number of year (1-12).
+        - day (float):  Day of month with fraction (1.0-31.999...).
     
-    Notes:
-      - Date and time are expressed in UT.
+    Note:
+      - Date and time will be in the same timezone as the JD (UT for the offical JD).
       - Decimals can be returned in the day to indicate the time of day, e.g. 1.0 for midnight and 1.5 for
         noon on the first day of the month.
-    
     """
     
-    jd05 = np.floor(jd+0.5)  # Julian day + 0.5: .0 at midnight
-    f_day = jd + 0.5 - jd05  # Fraction of the day (=time/24)
+    jd  = np.asarray(np.copy(jd))    # Copy and typecast to numpy.ndarray
+    if jd.ndim == 0:  jd = jd[None]  # Create an array from a scalar if needed
     
-    if np.ndim(jd05) > 0:  # Array-like
-        jd05 = np.asarray(jd05)  # Ensure we have a numpy.ndarray
-        
-        # If jd05 >= jd_start_greg, use the Gregorian calendar:
-        sel         = jd05 >= jd_start_greg  # Select the Gregorian cases
-        cent_5      = np.zeros(np.shape(jd05))
-        cent_5[sel] = np.floor((jd05[sel]-1867216.25)/36524.25)   # Gregorian centuries since 400-03-01
-        jd05[sel]  += 1 + cent_5[sel] - np.floor(cent_5[sel]/4.)  # Offset Julian-Gregorian
-        
-    else:                  # If we have a scalar
-        
-        if jd05 >= jd_start_greg:  # Correction for the Gregorian calendar:
-            cent_5 = np.floor((jd05-1867216.25)/36524.25)  # Gregorian centuries since 400-03-01
-            jd05  += 1 + cent_5 - np.floor(cent_5/4.)      # Offset Julian-Gregorian
+    jd05  = np.floor(jd+0.5)  # Julian day + 0.5 -> .0 at midnight (asarray)
+    f_day = jd + 0.5 - jd05   # Time as fraction of the day (=time/24)
     
+    # If jd05 >= jd_start_greg, use the Gregorian calendar:
+    sel         = jd05 >= jd_start_greg  # Select the Gregorian cases
+    cent_5      = np.zeros_like(jd05)    # Filled with 0's
+    cent_5[sel] = np.floor((jd05[sel]-1867216.25)/36524.25)   # Count Greg.cent. - 5
+    jd05[sel]  += 1 + cent_5[sel] - np.floor(cent_5[sel]/4.)  # Offset Jul.-Greg.
     
-    jd05 += 1524                           # Set JD=0 to -4712-01-01
-    yr0 = np.floor((jd05 - 122.1)/365.25)  # Year since -4716 CE
-    day0 = np.floor(365.25*yr0)            # Julian days since -4716 CE
-    mnt0 = np.floor((jd05-day0)/30.6001)   # Month number + 1 (4-15 = Mar-Feb)
+    jd05 += 1524                             # Set JD=0 to -4712-01-01
+    yr0   = np.floor((jd05 - 122.1)/365.25)  # Year since -4716 CE
+    day0  = np.floor(365.25*yr0)             # Julian days since -4716 CE
+    mnt0  = np.floor((jd05-day0)/30.6001)    # Month number + 1 (4-15 = Mar-Feb)
     
-    day = jd05 - day0 - np.floor(30.6001*mnt0) + f_day  # Day of month + fraction
+    day = jd05 - day0 - np.floor(30.6001*mnt0) + f_day  # Day of mnt + frac. (as.ar.)
     
-    if np.ndim(mnt0) > 0:  # Array-like
-        mnt0 = np.asarray(mnt0)  # Ensure we have a numpy.ndarray
-        month = np.zeros(np.shape(mnt0)).astype(int)
-        month[mnt0 <  14] = (mnt0[mnt0 <  14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
-        month[mnt0 >= 14] = (mnt0[mnt0 >= 14] - 13)  # Month Jan,Dec: 14,15 -> 1,2
-        
-        year = np.zeros(np.shape(month)).astype(int)
-        year[month >  2] = (yr0[month >  2] - 4716)  # Year since -4716 CE -> CE
-        year[month <= 2] = (yr0[month <= 2] - 4715)
-        
-    else:                  # If we have a scalar
-        if mnt0 < 14:  # March - December:
-            month = int(mnt0 -  1)   # Month Mar-Dec = 3-12
-            year  = int(yr0 - 4716)  # Year CE
-        else:          # January, February:
-            month = int(mnt0 - 13)   # Month Jan,Feb = 1,2
-            year  = int(yr0 - 4715)  # Year CE
-        
-    return year,month,day
+    month = np.zeros_like(mnt0).astype(int)
+    month[mnt0 <  14] = (mnt0[mnt0 <  14] -  1)  # Month Mar-Dec: 4-13 -> 3-12
+    month[mnt0 >= 14] = (mnt0[mnt0 >= 14] - 13)  # Month Jan,Dec: 14,15 -> 1,2
+    
+    year = np.zeros_like(month).astype(int)
+    year[month >  2] = (yr0[month >  2] - 4716)  # Year since -4716 CE -> CE
+    year[month <= 2] = (yr0[month <= 2] - 4715)
+    
+    return np.squeeze(year),np.squeeze(month),np.squeeze(day)  # Arrays -> "scalars"
 
 
 
@@ -192,7 +179,7 @@ def jd2year(jd):
     
     """
     
-    year,month,day = jd2ymd(jd)        # Compute current year
+    year,month,day = date_from_jd(jd)  # Compute current year
     jd0 = jd_from_date(year,   1, 1)   # Jan 1 of current year
     jd1 = jd_from_date(year+1, 1, 1)   # Jan 1 of next year
     dy  = (jd-jd0) / (jd1-jd0)         # Linear interpolation for fractional year
@@ -219,10 +206,10 @@ def jd2date_time(jd):
       - second (float):   Second of minute of time (UT).
         
     Note:
-      - uses jd2ymd().
+      - uses date_from_jd().
     """
     
-    year,month,dday = jd2ymd(jd)     # Compute current date
+    year,month,dday = date_from_jd(jd)     # Compute current date
     
     day    = np.floor(dday).astype(int)
     hour   = np.floor((dday-day)*24).astype(int)
@@ -496,7 +483,7 @@ def weekday_en_abbr_from_datetime(datetime):
     return weekdays[datetime.weekday()]
 
 
-def warn_obsolesent(old_name, new_name, rename=False, extra=False):
+def _warn_obsolesent(old_name, new_name, rename=False, extra=False):
     """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
     sys.stderr.write('\nWarning: the astrotool function '+old_name+'() is obsolesent and will be removed in future versions.')
@@ -516,6 +503,7 @@ if __name__ == '__main__':
     import colored_traceback
     colored_traceback.add_hook()
     
+    print('\njd_from_date(), scalar:')
     print('JD for -4712: ', jd_from_date(-4712,1,1.5))
     print('JD for -1000: ', jd_from_date(-1000,1,1.0))
     print('JD for    -1: ', jd_from_date(-1,1,1.0))
@@ -540,6 +528,8 @@ if __name__ == '__main__':
     print()
     print('JD for 2000:  ', jd_from_date_time(2000,1,1.0, 12,0,0))
     
+    
+    print('\njd_from_date(), array:')
     years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
     months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
     days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
@@ -554,42 +544,42 @@ if __name__ == '__main__':
         print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
         
     
+    print('\n\ndate_from_jd(), scalar:')
+    print('Date for JD=0.0:                    ', *date_from_jd(0.0))
+    print('Date for JD=0.0001:                 ', *date_from_jd(0.0001))
+    print('Date for JD=1355807.5:              ', *date_from_jd(1355807.5))
+    print('Date for JD=1684532.5:              ', *date_from_jd(1684532.5))
+    print('Date for JD=1720692.5:              ', *date_from_jd(1720692.5))
+    print('Date for JD=1721057.5:              ', *date_from_jd(1721057.5))
     print()
+    print('Date for JD=1721423.5:              ', *date_from_jd(1721423.5))
+    print('Date for JD=1721423.5 (Gregorian):  ', *date_from_jd(1721423.5, jd_start_greg=0))
     print()
-    print('Date for JD=0.0:                    ', jd2ymd(0.0))
-    print('Date for JD=0.0001:                 ', jd2ymd(0.0001))
-    print('Date for JD=1355807.5:              ', jd2ymd(1355807.5))
-    print('Date for JD=1684532.5:              ', jd2ymd(1684532.5))
-    print('Date for JD=1720692.5:              ', jd2ymd(1720692.5))
-    print('Date for JD=1721057.5:              ', jd2ymd(1721057.5))
+    print('Date for JD=2298152.5:              ', *date_from_jd(2298152.5))
+    print('Date for JD=2299160.0:              ', *date_from_jd(2299160.0))
+    print('Date for JD=2299161.0:              ', *date_from_jd(2299161.0))
+    print('Date for JD=2299238.5:              ', *date_from_jd(2299238.5))
+    print('Date for JD=2299247.5:              ', *date_from_jd(2299247.5))
+    print('Date for JD=2301795.5:              ', *date_from_jd(2301795.5))
     print()
-    print('Date for JD=1721423.5:              ', jd2ymd(1721423.5))
-    print('Date for JD=1721423.5 (Gregorian):  ', jd2ymd(1721423.5, jd_start_greg=0))
-    print()
-    print('Date for JD=2298152.5:              ', jd2ymd(2298152.5))
-    print('Date for JD=2299160.0:              ', jd2ymd(2299160.0))
-    print('Date for JD=2299161.0:              ', jd2ymd(2299161.0))
-    print('Date for JD=2299238.5:              ', jd2ymd(2299238.5))
-    print('Date for JD=2299247.5:              ', jd2ymd(2299247.5))
-    print('Date for JD=2301795.5:              ', jd2ymd(2301795.5))
-    print()
-    print('Date for JD=2451544.5:              ', jd2ymd(2451544.5))
-    print('Date for JD=2451544.5 (Julian):     ', jd2ymd(2451544.5, jd_start_greg=np.inf))
-    print('Date for JD=2459526.94695:          ', jd2ymd(2459526.94695))
-    print('Date for JD=2459215.54238:          ', jd2ymd(2459215.54238))
+    print('Date for JD=2451544.5:              ', *date_from_jd(2451544.5))
+    print('Date for JD=2451544.5 (Julian):     ', *date_from_jd(2451544.5, jd_start_greg=np.inf))
+    print('Date for JD=2459526.94695:          ', *date_from_jd(2459526.94695))
+    print('Date for JD=2459215.54238:          ', *date_from_jd(2459215.54238))
     print()
     
+    print('\ndate_from_jd(), array:')
     jds = np.arange(26)*1e5
     jd_start_gregs2 = np.zeros(len(jds)) + np.inf
-    # yrs,mnts,dys = jd2ymd(jds)
-    yrs,mnts,dys = jd2ymd(jds, jd_start_greg=jd_start_gregs2)
+    # yrs,mnts,dys = date_from_jd(jds)
+    yrs,mnts,dys = date_from_jd(jds, jd_start_greg=jd_start_gregs2)
     for iter in range(len(jds)):
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jds[iter], yrs[iter], mnts[iter], dys[iter]))
         
     print()
     for iter in range(11):
         jd = 2299160.5-5+iter
-        yr,mnt,dy = jd2ymd(jd)
+        yr,mnt,dy = date_from_jd(jd)
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
     
     print()
