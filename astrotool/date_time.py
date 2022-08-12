@@ -189,35 +189,41 @@ def jd2year(jd):
 
 
 def jd2date_time(jd):
-    """Compute the date and time from a given Julian Day.
+    """Obsolescent function.  Use date_time_from_jd() instead."""
+    _warn_obsolesent('jd2date_time', 'date_time_from_jd', rename=True, extra=True)
+    return date_time_from_jd(jd)
+
+
+def date_time_from_jd(jd, jd_start_greg=2299160.5):
+    """Compute the calendar date and time from a given Julian Day.
     
     Args:
-      jd (float):   Julian day (days).
+      jd (float):             Julian day (days).
+      jd_start_greg (float):  JD of start of Gregorian calendar (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
-      tuple (int,int,int, int,int,float):   tuple containing (year CE, month, day,  hour, minute, second):
+      tuple (int,int,int, int,int,float):  Tuple containing (year, month, day,  hour, minute, second):
     
-      - year   (int):     Year CE (UT).  Note that year=0 = 1 BCE.
-      - month  (int):     Month number of year (UT; 1-12).
-      - day    (int):     Day of month with fraction (UT; 1.0-31.999).
+        - year (int):      Year CE.  Note that year=0 indicates 1 BCE.
+        - month (int):     Month number of year (1-12).
+        - day (int):       Day of month (1-31).
     
-      - hour   (int):     Hour of time of day (UT).
-      - minute (int):     Minute of hour of time (UT).
-      - second (float):   Second of minute of time (UT).
-        
+        - hour (int):      Hour of day (0-23).
+        - minute (int):    Minute of hour (0-59).
+        - second (float):  Second of minute (0.0-59.999...)
+    
     Note:
-      - uses date_from_jd().
+      - Date and time will be in the same timezone as the JD, hence UTC for the offical JD.
     """
     
-    year,month,dday = date_from_jd(jd)     # Compute current date
-    
-    day    = np.floor(dday).astype(int)
-    hour   = np.floor((dday-day)*24).astype(int)
-    minute = np.floor((dday-day-hour/24)*1440).astype(int)
-    second = (dday-day-hour/24-minute/1440)*86400
+    year,month,day_f = date_from_jd(jd, jd_start_greg)  # Day with fraction
+    day    = np.floor(day_f).astype(int)  # Integer day
+    time   = (day_f-day)*24               # Time of day in hours
+    hour   = np.floor(time).astype(int)
+    minute = np.floor((time-hour)*60).astype(int)
+    second = (time-hour-minute/60)*3600
     
     return year,month,day, hour,minute,second
-    
 
 
 def fix_date_time(year,month,day, hour,minute,second):
@@ -251,12 +257,12 @@ def fix_date_time(year,month,day, hour,minute,second):
       - second (float):   Second of minute of time (0.000-59.999).
         
     Note:
-      - uses date_time2jd() and jd2date_time().
+      - uses date_time2jd() and date_time_from_jd().
     
     """
     
     jd = date_time2jd(year,month,day, hour,minute,second)
-    year,month,day, hour,minute,second = jd2date_time(jd)
+    year,month,day, hour,minute,second = date_time_from_jd(jd)
     
     return year,month,day, hour,minute,second
 
@@ -486,7 +492,7 @@ def weekday_en_abbr_from_datetime(datetime):
 def _warn_obsolesent(old_name, new_name, rename=False, extra=False):
     """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
-    sys.stderr.write('\nWarning: the astrotool function '+old_name+'() is obsolesent and will be removed in future versions.')
+    sys.stderr.write('\nWarning: the AstroTool function '+old_name+'() is obsolesent and will be removed in a future version.')
     sys.stderr.write('  Use '+new_name+'() instead.')
     if rename:
         if extra:
@@ -588,3 +594,15 @@ if __name__ == '__main__':
     for dy in range(11):
         jd = jd_from_date(yr,mnt,dy)
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
+    
+    
+    print('\n\ndate_time_from_jd(), scalar:')
+    print('Date and time for JD=2459526.94695: ', *date_time_from_jd(2459526.94695))
+    print('Date and time for JD=2459215.54238: ', *date_time_from_jd(2459215.54238))
+    print()
+    print('\ndate_time_from_jd(), array:')
+    jds1 = jds[15:]
+    yrs,mnts,dys, hrs,mins,secs = date_time_from_jd(jds1+0.127851)  # , jd_start_greg=jd_start_gregs2)
+    for iter in range(len(jds1)):
+        print('JD = %9.1f:  %5i-%2.2i-%2.2i, %2.2i:%2.2i:%06.3f' % (jds1[iter], yrs[iter],mnts[iter],dys[iter], hrs[iter],mins[iter],secs[iter]))
+    
