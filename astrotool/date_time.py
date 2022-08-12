@@ -35,59 +35,50 @@ from .constants import pi2, jd1820,jd2000
 
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
-    """Compute the Julian Day for a given year, month and day.
+    """Obsolescent function.  Use jd_from_date() instead."""
+    warn_obsolesent('julian_day', 'jd_from_date', rename=True)
+    return jd_from_date(year,month,day, jd_start_greg)
+
+
+def jd_from_date(year,month,day, jd_start_greg=2299160.5):
+    """Compute the Julian Day from given year, month and day.
     
     Args:
-      year (int):              Year CE (UT).  Note that year=0 = 1 BCE.
-      month (int):             Month number of year (UT; 1-12).
-      day (float):             Day of month with fraction (UT; 1.0-31.999).
-      
-      jd_start_greg (float):   JD of the start of the Gregorian calendar
-                               (optional; default=2299160.5 = 1582-10-15.0).
+      year (int):             Year CE.  Note that year=0 = 1 BCE, year=-1 = 2 BCE, etc.
+      month (int):            Month number of year (1-12).
+      day (float):            Day of month with fraction (1.0-31.999...).
+    
+      jd_start_greg (float):  JD of start of Gregorian calendar (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
       float:  jd: Julian day (days).
       
-    Notes:
-      - Date and time are expressed in UT.
+    Note:
+      - The JD will be in the same timezone as the date and time (UT for the offical JD).
       - Decimals can be used in the day to take into account the time of day other than midnight, e.g. 1.5 for
         noon on the first day of the month.
-    
     """
     
-    if np.ndim(month) > 0:  # Array-like
-        # Ensure we have numpy.ndarrays and make a copy in order not to change the input arrays:
-        year  = np.asarray(np.copy(year))
-        month = np.asarray(np.copy(month))
-        day   = np.asarray(np.copy(day))
-        
-        # Jan and Feb are month 13 and 14 of the previous year:
-        year[month <= 2]  -= 1
-        month[month <= 2] += 12
-        
-        # JD for Julian calendar:
-        jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
-        
-        # Apply correction for Gregorian calendar:
-        sel      = jd >= jd_start_greg                # Select the cases where the Gregorian calendar is desired
-        cent_1   = np.floor(year[sel]/100.0)          # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
-        jd[sel] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
-        
-    else:                           # If we have a scalar
-        
-        # Jan and Feb count as month 13 and 14 of the previous year:
-        if month <= 2:
-            year -= 1
-            month += 12
-        
-        # JD for the Julian calendar:
-        jd = np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5
-        
-        if jd >= jd_start_greg:  # If this is a Gregorian date:
-            cent_1 = np.floor(year/100.0)               # Count: (century - 1): (0 for 0-99CE, 1 for 100-199CE, etc.)
-            jd    += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian, changes every century, except when divisible by 400
+    # Copy and typecast input to numpy.ndarrays:
+    year  = np.asarray(np.copy(year))
+    month = np.asarray(np.copy(month))
+    day   = np.asarray(np.copy(day))
     
-    return jd
+    # Jan/Feb are month 13/14 of the previous year:
+    year[month  <= 2] -= 1
+    month[month <= 2] += 12
+    
+    # JD for Julian calendar (ensure it always is an array):
+    jd = np.asarray(np.floor(365.25*(year+4716)) + np.floor(30.6001*(month+1)) + day - 1524.5)
+    
+    # Apply correction for Gregorian calendar:
+    sel      = jd >= jd_start_greg                # Select cases for Greg.cal.
+    cent_1   = np.floor(year[sel]/100.0)          # Count: (century - 1)
+    jd[sel] += 2 - cent_1 + np.floor(cent_1/4.0)  # Offset Julian-Gregorian
+    
+    return np.squeeze(jd)  # Turn array back into scalar if needed
+
+
 
 
 
@@ -108,11 +99,11 @@ def date_time2jd(year,month,day, hour,minute,second):
     
     Notes:
       - Date and time are expressed in UT.
-      - uses julian_day().
+      - uses jd_from_date().
     """
     
     dday = day + hour/24 + minute/1440 + second/86400
-    jd   = julian_day(year, month, dday)
+    jd   = jd_from_date(year, month, dday)
     
     return jd
 
@@ -199,10 +190,10 @@ def jd2year(jd):
     
     """
     
-    year,month,day = jd2ymd(jd)      # Compute current year
-    jd0 = julian_day(year,   1, 1)   # Jan 1 of current year
-    jd1 = julian_day(year+1, 1, 1)   # Jan 1 of next year
-    dy  = (jd-jd0) / (jd1-jd0)       # Linear interpolation for fractional year
+    year,month,day = jd2ymd(jd)        # Compute current year
+    jd0 = jd_from_date(year,   1, 1)   # Jan 1 of current year
+    jd1 = jd_from_date(year+1, 1, 1)   # Jan 1 of next year
+    dy  = (jd-jd0) / (jd1-jd0)         # Linear interpolation for fractional year
     
     return year + dy
 
@@ -443,11 +434,11 @@ def deltat(jd):
     year = jd2year(jd)  # Year with fraction for jd of interest
     
     if year < years[0]:     # Before -700
-        jd0 = julian_day(years[0], 1, 1)
+        jd0 = jd_from_date(years[0], 1, 1)
         return deltat_1820(jd) - deltat_1820(jd0) + DTvalues[0]
     
     elif year > years[-1]:  # in the future
-        jd1 = julian_day(years[-1], 1, 1)
+        jd1 = jd_from_date(years[-1], 1, 1)
         return deltat_1820(jd) - deltat_1820(jd1) + DTvalues[-1]
     
     else:                    # linear interpolation from known data
@@ -503,32 +494,44 @@ def weekday_en_abbr_from_datetime(datetime):
     return weekdays[datetime.weekday()]
 
 
+def warn_obsolesent(old_name, new_name, rename=False):
+    """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename."""
+    import sys
+    sys.stderr.write('\nWarning: the astrotool function '+old_name+'() is obsolesent and will be removed in future versions.')
+    sys.stderr.write('  Use '+new_name+'() instead.')
+    if rename:
+        sys.stderr.write('  The interface has not changed; a simple search and replace for the function names should suffice.\n\n')
+    else:
+        sys.stderr.write('  Please see the documentation for details.\n\n')
+    return
+
+
 # Test code:
 if __name__ == '__main__':
     import colored_traceback
     colored_traceback.add_hook()
     
-    print('JD for -4712: ', julian_day(-4712,1,1.5))
-    print('JD for -1000: ', julian_day(-1000,1,1.0))
-    print('JD for    -1: ', julian_day(-1,1,1.0))
-    print('JD for     0: ', julian_day(0,1,1.0))
+    print('JD for -4712: ', jd_from_date(-4712,1,1.5))
+    print('JD for -1000: ', jd_from_date(-1000,1,1.0))
+    print('JD for    -1: ', jd_from_date(-1,1,1.0))
+    print('JD for     0: ', jd_from_date(0,1,1.0))
     print()
-    print('JD for    1J: ', julian_day(1,1,1.0))
-    print('JD for    1G: ', julian_day(1,1,1.0, jd_start_greg=0))
+    print('JD for    1J: ', jd_from_date(1,1,1.0))
+    print('JD for    1G: ', jd_from_date(1,1,1.0, jd_start_greg=0))
     print()
-    print('JD for 1581:  ', julian_day(1581,1,1.0))
-    print('JD for 1582:  ', julian_day(1582,1,1.0))
+    print('JD for 1581:  ', jd_from_date(1581,1,1.0))
+    print('JD for 1582:  ', jd_from_date(1582,1,1.0))
     print()
-    print('JD for 1582a: ', julian_day(1582,12,30.0))
-    print('JD for 1582b: ', julian_day(1582,12,31.0))
-    print('JD for 1583a: ', julian_day(1583,1,1.0))
-    print('JD for 1583b: ', julian_day(1583,1,2.0))
+    print('JD for 1582a: ', jd_from_date(1582,12,30.0))
+    print('JD for 1582b: ', jd_from_date(1582,12,31.0))
+    print('JD for 1583a: ', jd_from_date(1583,1,1.0))
+    print('JD for 1583b: ', jd_from_date(1583,1,2.0))
     print()
-    print('JD for 1584:  ', julian_day(1584,1,1.0))
-    print('JD for 1585:  ', julian_day(1585,1,1.0))
+    print('JD for 1584:  ', jd_from_date(1584,1,1.0))
+    print('JD for 1585:  ', jd_from_date(1585,1,1.0))
     print()
-    print('JD for 2000G: ', julian_day(2000,1,1.0))
-    print('JD for 2000J: ', julian_day(2000,1,1.0, jd_start_greg=np.inf))
+    print('JD for 2000G: ', jd_from_date(2000,1,1.0))
+    print('JD for 2000J: ', jd_from_date(2000,1,1.0, jd_start_greg=np.inf))
     
     years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
     months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
@@ -538,8 +541,8 @@ if __name__ == '__main__':
     jd_start_gregs1 = [inf,0,  inf,inf, inf,inf,0,0, 0,0, 0,inf]
     letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
     
-    JDs = julian_day(years,months,days, jd_start_greg=jd_start_gregs1)
-    # JDs = julian_day(years,months,days, jd_start_greg=np.inf)
+    JDs = jd_from_date(years,months,days, jd_start_greg=jd_start_gregs1)
+    # JDs = jd_from_date(years,months,days, jd_start_greg=np.inf)
     for iter in range(len(JDs)):
         print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
         
@@ -586,5 +589,5 @@ if __name__ == '__main__':
     yr = 1582
     mnt = 10
     for dy in range(11):
-        jd = julian_day(yr,mnt,dy)
+        jd = jd_from_date(yr,mnt,dy)
         print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
