@@ -519,8 +519,8 @@ def _warn_obsolesent(old_name, new_name, rename=False, extra=False):
 
 # Test code:
 if __name__ == '__main__':
-    import colored_traceback
-    colored_traceback.add_hook()
+    import colored_traceback as _clrtrb
+    _clrtrb.add_hook()
     
     print('\njd_from_date(), scalar:')
     print('JD for -4712: ', jd_from_date(-4712,1,1.5))
@@ -549,18 +549,18 @@ if __name__ == '__main__':
     
     
     print('\njd_from_date(), array:')
-    years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
-    months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
-    days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
+    _years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
+    _months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
+    _days   = [1,1,    1,   1,   30,  31,   1,   2,    1,   1,    1,   1]
     # julians = [True,False, True,True, True,True,False,False, False,False, False,True]
-    inf = np.inf
-    jd_start_gregs1 = [inf,0,  inf,inf, inf,inf,0,0, 0,0, 0,inf]
-    letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
+    _inf = np.inf
+    _jd_start_gregs1 = [_inf,0,  _inf,_inf, _inf,_inf,0,0, 0,0, 0,_inf]
+    _letters = ['J:','G:', ': ',': ', ': ',': ',': ',': ', ': ',': ', 'G:','J:']
     
-    JDs = jd_from_date(years,months,days, jd_start_greg=jd_start_gregs1)
-    # JDs = jd_from_date(years,months,days, jd_start_greg=np.inf)
-    for iter in range(len(JDs)):
-        print('%4i%2s  %9.1f' % (years[iter],letters[iter], JDs[iter]))
+    _JDs = jd_from_date(_years,_months,_days, jd_start_greg=_jd_start_gregs1)
+    # _JDs = jd_from_date(_years,_months,_days, _jd_start_greg=np.inf)
+    for _iter in range(len(_JDs)):
+        print('%4i%2s  %9.1f' % (_years[_iter],_letters[_iter], _JDs[_iter]))
         
     
     print('\n\ndate_from_jd(), scalar:')
@@ -588,25 +588,25 @@ if __name__ == '__main__':
     print()
     
     print('\ndate_from_jd(), array:')
-    jds = np.arange(26)*1e5
-    jd_start_gregs2 = np.zeros(len(jds)) + np.inf
+    _jds = np.arange(26)*1e5
+    _jd_start_gregs2 = np.zeros(len(_jds)) + np.inf
     # yrs,mnts,dys = date_from_jd(jds)
-    yrs,mnts,dys = date_from_jd(jds, jd_start_greg=jd_start_gregs2)
-    for iter in range(len(jds)):
-        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jds[iter], yrs[iter], mnts[iter], dys[iter]))
+    _yrs,_mnts,_dys = date_from_jd(_jds, jd_start_greg=_jd_start_gregs2)
+    for _iter in range(len(_jds)):
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (_jds[_iter], _yrs[_iter], _mnts[_iter], _dys[_iter]))
         
     print()
-    for iter in range(11):
-        jd = 2299160.5-5+iter
-        yr,mnt,dy = date_from_jd(jd)
-        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
+    for _iter in range(11):
+        _jd = 2299160.5-5+_iter
+        _yr,_mnt,_dy = date_from_jd(_jd)
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (_jd, _yr, _mnt, _dy))
     
     print()
-    yr = 1582
-    mnt = 10
-    for dy in range(11):
-        jd = jd_from_date(yr,mnt,dy)
-        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (jd, yr, mnt, dy))
+    _yr = 1582
+    _mnt = 10
+    for _dy in range(11):
+        _jd = jd_from_date(_yr,_mnt,_dy)
+        print('JD = %9.1f:  %5i-%2.2i-%04.1f' % (_jd, _yr, _mnt, _dy))
     
     
     
@@ -615,10 +615,10 @@ if __name__ == '__main__':
     print('Date and time for JD=2459215.54238: ', *date_time_from_jd(2459215.54238))
     print()
     print('date_time_from_jd(), array:')
-    jds1 = jds[15:]
-    yrs,mnts,dys, hrs,mins,secs = date_time_from_jd(jds1+0.127851)  # , jd_start_greg=jd_start_gregs2)
-    for iter in range(len(jds1)):
-        print('JD = %9.1f:  %5i-%2.2i-%2.2i, %2.2i:%2.2i:%06.3f' % (jds1[iter], yrs[iter],mnts[iter],dys[iter], hrs[iter],mins[iter],secs[iter]))
+    _jds1 = _jds[15:]
+    _yrs,_mnts,_dys, _hrs,_mins,_secs = date_time_from_jd(_jds1+0.127851)  # , jd_start_greg=_jd_start_gregs2)
+    for _iter in range(len(_jds1)):
+        print('JD = %9.1f:  %5i-%2.2i-%2.2i, %2.2i:%2.2i:%06.3f' % (_jds1[_iter], _yrs[_iter],_mnts[_iter],_dys[_iter], _hrs[_iter],_mins[_iter],_secs[_iter]))
     
     
     
@@ -627,6 +627,27 @@ if __name__ == '__main__':
     print('year for JD=2459215.54238: ', year_from_jd(2459215.54238))
     print()
     print('year_from_jd(), array:')
-    jds1 = jds[15:]
-    print(year_from_jd(jds1+0.127851))
+    _jds1 = _jds[15:]
+    print(year_from_jd(_jds1+0.127851))
+    
+    
+    print()
+    print()
+    print('ΔT and GMST for scalars:')
+    from astroconst import r2h as _r2h
+    _jd = jd_from_date_time(2012,12,23, 12,34,56)
+    # _jd = jd_from_date_time(2000,1,1, 0,0,0)
+    _deltat1 = deltat_1820(_jd)
+    _deltat2 = deltat(_jd)
+    _gmst   = gmst(_jd)
+    # _gmst1  = gmst(_jd, _deltat1)
+    # _gmst2  = gmst(_jd, _deltat2)
+    # print('Date:     ', datetimestr_from_jd(_jd))
+    print('JD:       ', _jd)
+    print('Delta T1: ', _deltat1,   's')
+    print('Delta T2: ', _deltat2,   's')
+    print('GMST:     ', _gmst*_r2h,  'h')
+    # print('GMST1:    ', _gmst1*_r2h, 'h')
+    # print('GMST2:    ', _gmst2*_r2h, 'h')
+    
     
