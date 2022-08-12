@@ -30,9 +30,9 @@ if __name__ == '__main__' and __package__ is None:
     __package__ = 'astrotool'
 
 # Modules:
-import numpy as np
+import numpy as _np
 from .constants import _pi2, _d2r,_r2d,_as2r, _earth_rad,_AU
-from .date_time import jd2tjc
+from .date_time import tjc_from_jd
 
 
 
@@ -50,7 +50,7 @@ def obliquity(jd):
 
     """
     
-    tJC = jd2tjc(jd)  # Time in Julian centuries since J2000.0
+    tJC = tjc_from_jd(jd)  # Time in Julian centuries since J2000.0
     eps = 0.409092804 - 2.269655e-4*tJC - 2.86e-9*tJC**2 + 8.78967e-9*tJC**3  # Obliquity of the ecliptic (rad)
     
     return eps
@@ -72,8 +72,8 @@ def eq2ecl(ra,dec, eps):
 
     """
     
-    lon = np.arctan2( np.sin(ra)  * np.cos(eps) + np.tan(dec) * np.sin(eps),  np.cos(ra) ) % _pi2
-    lat =  np.arcsin( np.sin(dec) * np.cos(eps) - np.cos(dec) * np.sin(eps) * np.sin(ra) )
+    lon = _np.arctan2( _np.sin(ra)  * _np.cos(eps) + _np.tan(dec) * _np.sin(eps),  _np.cos(ra) ) % _pi2
+    lat =  _np.arcsin( _np.sin(dec) * _np.cos(eps) - _np.cos(dec) * _np.sin(eps) * _np.sin(ra) )
     
     return lon,lat
 
@@ -98,8 +98,8 @@ def ecl2eq(lon,lat, eps):
 
     """
     
-    ra  = np.arctan2( np.sin(lon) * np.cos(eps)  -  np.tan(lat) * np.sin(eps),  np.cos(lon) ) % _pi2
-    dec =  np.arcsin( np.sin(lat) * np.cos(eps)  +  np.cos(lat) * np.sin(eps) * np.sin(lon) )
+    ra  = _np.arctan2( _np.sin(lon) * _np.cos(eps)  -  _np.tan(lat) * _np.sin(eps),  _np.cos(lon) ) % _pi2
+    dec =  _np.arcsin( _np.sin(lat) * _np.cos(eps)  +  _np.cos(lat) * _np.sin(eps) * _np.sin(lon) )
     
     return ra,dec
 
@@ -120,8 +120,8 @@ def par2horiz(ha,dec, phi):
     
     """
     
-    az  = np.arctan2( np.sin(ha),   np.cos(ha) * np.sin(phi) - np.tan(dec) * np.cos(phi) ) % _pi2
-    alt = np.arcsin(  np.sin(dec) * np.sin(phi) + np.cos(ha) * np.cos(dec) * np.cos(phi) )
+    az  = _np.arctan2( _np.sin(ha),   _np.cos(ha) * _np.sin(phi) - _np.tan(dec) * _np.cos(phi) ) % _pi2
+    alt = _np.arcsin(  _np.sin(dec) * _np.sin(phi) + _np.cos(ha) * _np.cos(dec) * _np.cos(phi) )
     
     return az,alt
 
@@ -148,7 +148,7 @@ def proper_motion(jd_start,jd_target, ra,dec, pma,pmd):
     """
     
     dtYr   = (jd_target - jd_start)/365.25
-    ra_target  = ra  + pma*dtYr / np.cos(dec)
+    ra_target  = ra  + pma*dtYr / _np.cos(dec)
     dec_target = dec + pmd*dtYr
     
     return ra_target,dec_target
@@ -172,7 +172,7 @@ def precess_from_2000(jd, ra,dec):
     
     """
     
-    tJC  = jd2tjc(jd)  # Time in Julian centuries since J2000.0
+    tJC  = tjc_from_jd(jd)  # Time in Julian centuries since J2000.0
     tJC2 = tJC**2
     tJC3 = tJC*tJC2
     
@@ -180,8 +180,8 @@ def precess_from_2000(jd, ra,dec):
     z     = (2306.2181*tJC + 1.09468*tJC2 + 0.018203*tJC3)*_as2r
     theta = (2004.3109*tJC - 0.42665*tJC2 - 0.041833*tJC3)*_as2r
     
-    ra_new  = (np.arctan2( np.sin(ra + zeta) * np.cos(dec),  np.cos(ra + zeta) * np.cos(theta) * np.cos(dec) - np.sin(theta) * np.sin(dec) ) + z) % _pi2
-    dec_new = np.arcsin( np.cos(ra + zeta) * np.sin(theta) * np.cos(dec)  +  np.cos(theta) * np.sin(dec) )
+    ra_new  = (_np.arctan2( _np.sin(ra + zeta) * _np.cos(dec),  _np.cos(ra + zeta) * _np.cos(theta) * _np.cos(dec) - _np.sin(theta) * _np.sin(dec) ) + z) % _pi2
+    dec_new = _np.arcsin( _np.cos(ra + zeta) * _np.sin(theta) * _np.cos(dec)  +  _np.cos(theta) * _np.sin(dec) )
     
     return ra_new,dec_new
 
@@ -217,18 +217,18 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     #                           (http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf)
     RpolEq = 0.996647189335   # Rpol/Req = 1-f: flattening of the Earth - WGS84 ellipsoid 
     
-    u  = np.arctan(RpolEq*np.tan(lat_obs))
-    RsinPhi = RpolEq*np.sin(u) + ele_obs/Req * np.sin(lat_obs)
-    RcosPhi = np.cos(u)        + ele_obs/Req * np.cos(lat_obs)
+    u  = _np.arctan(RpolEq*_np.tan(lat_obs))
+    RsinPhi = RpolEq*_np.sin(u) + ele_obs/Req * _np.sin(lat_obs)
+    RcosPhi = _np.cos(u)        + ele_obs/Req * _np.cos(lat_obs)
     
-    sinHp = np.sin(_earth_rad/_AU)/(dist_gc/_AU)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
+    sinHp = _np.sin(_earth_rad/_AU)/(dist_gc/_AU)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
     
     # Meeus, Ch.40, p.282:
-    N  = np.cos(lon_gc)*np.cos(lat_gc) - RcosPhi*sinHp*np.cos(lst)
+    N  = _np.cos(lon_gc)*_np.cos(lat_gc) - RcosPhi*sinHp*_np.cos(lst)
     
-    lon_tc = np.arctan2( np.sin(lon_gc)*np.cos(lat_gc) - sinHp*(RsinPhi*np.sin(eps) + RcosPhi*np.cos(eps)*np.sin(lst)), N ) % _pi2  # Topocentric longitude
-    lat_tc = np.arctan((np.cos(lon_tc)*(np.sin(lat_gc) - sinHp*(RsinPhi*np.cos(eps) - RcosPhi*np.sin(eps)*np.sin(lst))))/N)         # Topocentric latitude
-    rad_tc = np.arcsin(np.cos(lon_tc)*np.cos(lat_tc)*np.sin(rad_gc)/N)                                                              # Topocentric semi-diameter
+    lon_tc = _np.arctan2( _np.sin(lon_gc)*_np.cos(lat_gc) - sinHp*(RsinPhi*_np.sin(eps) + RcosPhi*_np.cos(eps)*_np.sin(lst)), N ) % _pi2  # Topocentric longitude
+    lat_tc = _np.arctan((_np.cos(lon_tc)*(_np.sin(lat_gc) - sinHp*(RsinPhi*_np.cos(eps) - RcosPhi*_np.sin(eps)*_np.sin(lst))))/N)         # Topocentric latitude
+    rad_tc = _np.arcsin(_np.cos(lon_tc)*_np.cos(lat_tc)*_np.sin(rad_gc)/N)                                                                # Topocentric semi-diameter
     
     # print(dist_gc, dist_gc*rad_gc/rad_tc)
     
