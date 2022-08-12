@@ -31,7 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
-from .constants import pi2, jd1820,jd2000
+from .constants import _pi2, _jd1820,_jd2000
 
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
@@ -382,14 +382,14 @@ def gmst(jd):
 
     """
     
-    tjd  = jd - jd2000                      # Julian Days after 2000.0 UT
+    tjd  = jd - _jd2000                      # Julian Days after 2000.0 UT
     tjd2 = tjd**2
     tjd4 = tjd2**2
            
     gmst = 4.89496121088131 + 6.30038809894828323*tjd + 5.05711849e-15*tjd2 - 4.378e-28*tjd2*tjd - 8.1601415e-29*tjd4 \
         - 2.7445e-36*tjd4*tjd  # Eq. 6.66, removed Delta-T term, hence replaced the first term
     
-    return gmst % pi2
+    return gmst % _pi2
 
 
 
@@ -411,7 +411,7 @@ def deltat_1820(jd):
     """
     
     # return 12 + 0.5 * 1.8e-3/86400/(36525*86400) * ((jd-jd1820)*86400)**2  # Comprehensible notation
-    return 12 + 0.5 * 1.8e-3 / 36525 * (jd-jd1820)**2                        # Simplified notation
+    return 12 + 0.5 * 1.8e-3 / 36525 * (jd-_jd1820)**2                        # Simplified notation
 
 
 
