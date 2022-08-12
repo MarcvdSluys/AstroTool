@@ -79,34 +79,36 @@ def jd_from_date(year,month,day, jd_start_greg=2299160.5):
     return np.squeeze(jd)  # Turn array back into scalar if needed
 
 
-
-
-
 def date_time2jd(year,month,day, hour,minute,second):
-    """Compute the Julian Day for a given year, month, day,  hour, minute and second.
+    """Obsolescent function.  Use jd_from_date() instead."""
+    warn_obsolesent('date_time2jd', 'jd_from_date_time', rename=True, extra=True)
+    return jd_from_date_time(year,month,day, hour,minute,second)
+
+
+def jd_from_date_time(year,month,day, hour,minute,second, jd_start_greg=2299160.5):
+    """Compute the Julian Day from given year, month, day, hour, minute and second.
     
     Args:
-      year (int):       Year CE (UT).  Note that year=0 = 1 BCE.
-      month (int):      Month number of year (UT; 1-12).
-      day (int):        Day of month with fraction (UT; 1.0-31.999).
+      year (int):             Year CE.  Note that year=0 = 1 BCE, year=-1 = 2 BCE, etc.
+      month (int):            Month number of year (1-12).
+      day (int):              Day of month (1-31).
     
-      hour (int):       Hour of time of day (UT).
-      minute (int):     Minute of hour of time (UT).
-      second (float):   Second of minute of time (UT).
+      hour (int):             Hour of day (0-23).
+      minute (int):           Minute of hour (0-59).
+      second (float):         Second of minute (0.0-59.999...).
+    
+      jd_start_greg (float):  JD of start of Gregorian calendar (optional; default=2299160.5 = 1582-10-15.0).
     
     Returns:
       float:  jd: Julian day (days).
-    
-    Notes:
-      - Date and time are expressed in UT.
-      - uses jd_from_date().
+      
+    Note:
+      - The JD will be in the same timezone as the date and time (UT for the offical JD).
+      - Decimals can be used in the second.
     """
     
-    dday = day + hour/24 + minute/1440 + second/86400
-    jd   = jd_from_date(year, month, dday)
-    
-    return jd
-
+    day_f = day + hour/24 + minute/1440 + second/86400    # Day with time as fraction
+    return jd_from_date(year,month,day_f, jd_start_greg)
 
 
 def jd2ymd(jd, jd_start_greg=2299160.5):
@@ -494,13 +496,16 @@ def weekday_en_abbr_from_datetime(datetime):
     return weekdays[datetime.weekday()]
 
 
-def warn_obsolesent(old_name, new_name, rename=False):
-    """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename."""
+def warn_obsolesent(old_name, new_name, rename=False, extra=False):
+    """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
     sys.stderr.write('\nWarning: the astrotool function '+old_name+'() is obsolesent and will be removed in future versions.')
     sys.stderr.write('  Use '+new_name+'() instead.')
     if rename:
-        sys.stderr.write('  The interface has not changed; a simple search and replace for the function names should suffice.\n\n')
+        if extra:
+            sys.stderr.write('  The interface has not changed much; a simple search and replace for the function names should suffice, but please see the documentation for new features.\n\n')
+        else:
+            sys.stderr.write('  The interface has not changed; a simple search and replace for the function names should suffice.\n\n')
     else:
         sys.stderr.write('  Please see the documentation for details.\n\n')
     return
@@ -532,6 +537,8 @@ if __name__ == '__main__':
     print()
     print('JD for 2000G: ', jd_from_date(2000,1,1.0))
     print('JD for 2000J: ', jd_from_date(2000,1,1.0, jd_start_greg=np.inf))
+    print()
+    print('JD for 2000:  ', jd_from_date_time(2000,1,1.0, 12,0,0))
     
     years  = [1,1, 1581,1582, 1582,1582,1583,1583, 1584,1585, 2000,2000]
     months = [1,1,    1,   1,   12,  12,   1,   1,    1,   1,    1,   1]
