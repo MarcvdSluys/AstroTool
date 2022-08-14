@@ -31,7 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
-from .constants import _pi2, _jd1820,_jd2000
+from .constants import _pi2, _jd2000
 
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
@@ -394,25 +394,31 @@ def gmst(jd):
 
 
 def deltat_1820(jd):
-    """Return a rough estimate for the value of Delta T.
+    """Obsolescent function.  Use deltat_from_jd_appr() instead."""
+    _warn_obsolesent('deltat_1820', 'deltat_from_jd_appr', rename=True)
+    return deltat_from_jd_appr(jd)
+
+
+def deltat_from_jd_appr(jd):
+    """Return a rough approximation for the value of Delta T.
     
     A lenghtening of the day of 1.8 ms/century is assumed, as well as and that the minimum of the parabola is
     DeltaT=12s in 1820.
     
     Args:
-      jd (float):   Julian day (days).
+      jd (float):  Julian day (days).
     
     Returns:
       float:  Delta T (s).
     
     References:
       - `Extrapolation of Delta T <http://hemel.waarnemen.com/Computing/deltat.html>`_.
-
     """
+    
+    from astroconst import jd1820 as _jd1820
     
     # return 12 + 0.5 * 1.8e-3/86400/(36525*86400) * ((jd-jd1820)*86400)**2  # Comprehensible notation
     return 12 + 0.5 * 1.8e-3 / 36525 * (jd-_jd1820)**2                        # Simplified notation
-
 
 
 def deltat(jd):
@@ -443,11 +449,11 @@ def deltat(jd):
     
     if year < years[0]:     # Before -700
         jd0 = jd_from_date(years[0], 1, 1)
-        return deltat_1820(jd) - deltat_1820(jd0) + DTvalues[0]
+        return deltat_from_jd_appr(jd) - deltat_from_jd_appr(jd0) + DTvalues[0]
     
     elif year > years[-1]:  # in the future
         jd1 = jd_from_date(years[-1], 1, 1)
-        return deltat_1820(jd) - deltat_1820(jd1) + DTvalues[-1]
+        return deltat_from_jd_appr(jd) - deltat_from_jd_appr(jd1) + DTvalues[-1]
     
     else:                    # linear interpolation from known data
         return _np.interp(year, years, DTvalues)
@@ -637,7 +643,7 @@ if __name__ == '__main__':
     from astroconst import r2h as _r2h
     _jd = jd_from_date_time(2012,12,23, 12,34,56)
     # _jd = jd_from_date_time(2000,1,1, 0,0,0)
-    _deltat1 = deltat_1820(_jd)
+    _deltat1 = deltat_from_jd_appr(_jd)
     _deltat2 = deltat(_jd)
     _gmst   = gmst(_jd)
     # _gmst1  = gmst(_jd, _deltat1)
