@@ -31,7 +31,6 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
-from .constants import _pi2, _jd2000
 
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
@@ -368,31 +367,6 @@ def tjm_from_jd(jd):
     return (jd - 2451545.0)/365250
 
 
-def gmst(jd):
-    """Calculate Greenwich Mean Sidereal Time for any instant, in radians.
-    
-    Args:
-      jd (float):   Julian day (days).
-    
-    Returns:
-      float:  gmst: Greenwich mean sidereal time (rad).
-    
-    References:
-      - Explanatory Supplement to the Astronomical Almanac, 3rd ed, Eq. 6.66 (2012).
-
-    """
-    
-    tjd  = jd - _jd2000                      # Julian Days after 2000.0 UT
-    tjd2 = tjd**2
-    tjd4 = tjd2**2
-           
-    gmst = 4.89496121088131 + 6.30038809894828323*tjd + 5.05711849e-15*tjd2 - 4.378e-28*tjd2*tjd - 8.1601415e-29*tjd4 \
-        - 2.7445e-36*tjd4*tjd  # Eq. 6.66, removed Delta-T term, hence replaced the first term
-    
-    return gmst % _pi2
-
-
-
 def deltat_1820(jd):
     """Obsolescent function.  Use deltat_from_jd_appr() instead."""
     _warn_obsolesent('deltat_1820', 'deltat_from_jd_appr', rename=True)
@@ -471,6 +445,41 @@ def deltat_from_jd_ipol(jd):
     deltat[sel] = _np.interp(year[sel], DTyears, DTvalues)
     
     return _np.squeeze(deltat)
+
+
+
+def gmst(jd):
+    """Obsolescent function.  Use gmst_from_jd() instead."""
+    _warn_obsolesent('gmst', 'gmst_from_jd', rename=True, extra=True)
+    return gmst_from_jd(jd)
+
+
+def gmst_from_jd(jd, deltat=None):
+    """Calculate Greenwich Mean Sidereal Time for any instant, in radians.
+    
+    Args:
+      jd (float):      Julian day (days).
+      deltat (float):  Delta T (s).
+    
+    Returns:
+      float:  Greenwich mean sidereal time (rad).
+    
+    References:
+      - Explanatory Supplement to the Astronomical Almanac, 3rd ed, Eq. 6.66 (2012).
+    """
+    
+    from astroconst import pi2 as _pi2, jd2000 as _jd2000
+    
+    tjd  = jd - _jd2000                     # Julian Days after 2000.0 UT
+    coefs = [4.89496121042905, 6.30038809894828323, 5.05711849e-15, -4.378e-28, -8.1601415e-29, -2.7445e-36]       # Coefficients for the polynomial
+    
+    if deltat is None: deltat = 63.8285    # Use DeltaT from J2000 if unavailable
+    gmst = 7.0855723730e-12*deltat         # Correction for Delta T
+    
+    for pow_i,coef_i in enumerate(coefs):  # Add the polynomial
+        gmst += coef_i*tjd**pow_i
+    
+    return gmst % _pi2
 
 
 
@@ -659,7 +668,7 @@ if __name__ == '__main__':
     # _jd = jd_from_date_time(2000,1,1, 0,0,0)
     _deltat1 = deltat_from_jd_appr(_jd)
     _deltat2 = deltat_from_jd_ipol(_jd)
-    _gmst   = gmst(_jd)
+    _gmst    = gmst_from_jd(_jd)
     # _gmst1  = gmst(_jd, _deltat1)
     # _gmst2  = gmst(_jd, _deltat2)
     # print('Date:     ', datetimestr_from_jd(_jd))
