@@ -32,12 +32,12 @@ if __name__ == '__main__' and __package__ is None:
 # Modules:
 import numpy as _np
 from astroconst import pi2 as _pi2, d2r as _d2r, r2d as _r2d, as2r as _as2r
-# from astroconst import  r_earth as _r_earth, au as _au
+from astroconst import  r_earth as _r_earth, au as _au
 from .date_time import tjc_from_jd
 
-from .constants import _earth_rad, _AU
-_r_earth = _earth_rad
-_au = _AU
+# from .constants import _earth_rad, _AU  # Obsolete
+_earth_rad = _r_earth/1000  # m -> km
+_AU = _au/1000              # m -> km
 
 
 def obliquity(jd):
@@ -217,7 +217,7 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     """
     
     # Meeus, Ch.11, p.82:
-    Req = _r_earth*1000           # Equatorial radius of the Earth in metres (same units as the elevation)
+    Req = _earth_rad*1000           # Equatorial radius of the Earth in metres (same units as the elevation)
     #                          (http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf)
     RpolEq = 0.996647189335  # Rpol/Req = 1-f: flattening of the Earth - WGS84 ellipsoid 
     
@@ -225,7 +225,7 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     RsinPhi = RpolEq*_np.sin(u) + ele_obs/Req * _np.sin(lat_obs)
     RcosPhi = _np.cos(u)        + ele_obs/Req * _np.cos(lat_obs)
     
-    sinHp = _np.sin(_r_earth/_au)/(dist_gc/_au)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
+    sinHp = _np.sin(_earth_rad/_AU)/(dist_gc/_AU)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
     
     # Meeus, Ch.40, p.282:
     N  = _np.cos(lon_gc)*_np.cos(lat_gc) - RcosPhi*sinHp*_np.cos(lst)
