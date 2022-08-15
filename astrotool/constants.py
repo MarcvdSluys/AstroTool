@@ -24,31 +24,11 @@
 
 """Definition of constants for AstroTool."""
 
-# Modules:
-import numpy as _np
-
-_pi   = _np.pi;          """pi"""
-_pi2  = 2*_pi;           """2 pi"""
-_pio2 = _pi/2;           """pi/2"""
-
-_r2d  = _np.degrees(1);  """Radians to degrees"""
-_d2r  = _np.radians(1);  """Degrees to radians"""
-
-_h2r   = _d2r*15;        """Hours to radians"""
-_as2r  = _d2r/3.6e3;     """Arcseconds to radians"""
-_mas2r = _as2r/1000.0;   """Milliarcseconds to radians"""
-
-_jd1820 = 2385801;       """JD in 1820  (for Delta-T fit)"""
-_jd1900 = 2415021;       """JD in 1900"""
-_jd2000 = 2451545;       """JD in 2000.0"""
-
 _earth_rad = 6378.1366;  """Earth radius in km"""
-_moon_rad  = 1737.5;     """Moon radius in km"""
-
 _AU = 1.495978707e8;     """Astronomical unit in km"""
 
 
 # Test code:
 if __name__ == '__main__':
-    print(_pi, _r2d, _jd2000, _earth_rad, _AU)
+    print(_earth_rad, _AU)
     

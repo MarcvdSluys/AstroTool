@@ -31,9 +31,13 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
-from .constants import _pi2, _d2r,_r2d,_as2r, _earth_rad,_AU
+from astroconst import pi2 as _pi2, d2r as _d2r, r2d as _r2d, as2r as _as2r
+# from astroconst import  r_earth as _r_earth, au as _au
 from .date_time import tjc_from_jd
 
+from .constants import _earth_rad, _AU
+_r_earth = _earth_rad
+_au = _AU
 
 
 def obliquity(jd):
@@ -213,15 +217,15 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     """
     
     # Meeus, Ch.11, p.82:
-    Req = _earth_rad*1000     # Equatorial radius of the Earth in metres (same units as the elevation)
-    #                           (http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf)
-    RpolEq = 0.996647189335   # Rpol/Req = 1-f: flattening of the Earth - WGS84 ellipsoid 
+    Req = _r_earth*1000           # Equatorial radius of the Earth in metres (same units as the elevation)
+    #                          (http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf)
+    RpolEq = 0.996647189335  # Rpol/Req = 1-f: flattening of the Earth - WGS84 ellipsoid 
     
     u  = _np.arctan(RpolEq*_np.tan(lat_obs))
     RsinPhi = RpolEq*_np.sin(u) + ele_obs/Req * _np.sin(lat_obs)
     RcosPhi = _np.cos(u)        + ele_obs/Req * _np.cos(lat_obs)
     
-    sinHp = _np.sin(_earth_rad/_AU)/(dist_gc/_AU)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
+    sinHp = _np.sin(_r_earth/_au)/(dist_gc/_au)  # Sine of the horizontal parallax, Meeus, Eq. 40.1
     
     # Meeus, Ch.40, p.282:
     N  = _np.cos(lon_gc)*_np.cos(lat_gc) - RcosPhi*sinHp*_np.cos(lst)
@@ -235,6 +239,18 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     if debug:
         print()
         print('geoc2topoc_ecl():')
+        
+        print('\nInput:')
+        print('lon_gc: ', lon_gc)
+        print('lat_gc: ', lat_gc)
+        print('dist_gc: ', dist_gc)
+        print('rad_gc: ', rad_gc)
+        print('eps: ', eps)
+        print('lst: ', lst)
+        print('lat_obs: ', lat_obs)
+        print('ele_obs: ', ele_obs)
+        
+        print('\nOutput:')
         print('%10s  %25s  %25s' % ('', 'rad/km/...','deg'))
         print()
         print('%10s  %25.15f' % ('Req: ', Req) )

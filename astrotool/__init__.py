@@ -35,6 +35,5 @@ For more information on the Python package, licence, source code and data files,
 
 name = 'astrotool'
 
-from .constants import *
 from .coordinates import *
 from .date_time import *
