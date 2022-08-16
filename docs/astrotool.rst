@@ -7,7 +7,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   astrotool.constants
    astrotool.coordinates
    astrotool.date_time
 
