@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'astrotool'
-copyright = '2021, Marc van der Sluys'
+copyright = '2021-2022, Marc van der Sluys'
 author = 'Marc van der Sluys'
 
 
