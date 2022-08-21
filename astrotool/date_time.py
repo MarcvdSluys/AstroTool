@@ -35,7 +35,7 @@ import numpy as _np
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
     """Obsolescent function.  Use jd_from_date() instead."""
-    _warn_obsolesent('julian_day', 'jd_from_date', rename=True)
+    _warn_obsolescent('julian_day', 'jd_from_date', rename=True)
     return jd_from_date(year,month,day, jd_start_greg)
 
 
@@ -80,7 +80,7 @@ def jd_from_date(year,month,day, jd_start_greg=2299160.5):
 
 def date_time2jd(year,month,day, hour,minute,second):
     """Obsolescent function.  Use jd_from_date_time() instead."""
-    _warn_obsolesent('date_time2jd', 'jd_from_date_time', rename=True, extra=True)
+    _warn_obsolescent('date_time2jd', 'jd_from_date_time', rename=True, extra=True)
     return jd_from_date_time(year,month,day, hour,minute,second)
 
 
@@ -112,7 +112,7 @@ def jd_from_date_time(year,month,day, hour,minute,second, jd_start_greg=2299160.
 
 def jd2ymd(jd, jd_start_greg=2299160.5):
     """Obsolescent function.  Use date_from_jd() instead."""
-    _warn_obsolesent('jd2ymd', 'date_from_jd', rename=True)
+    _warn_obsolescent('jd2ymd', 'date_from_jd', rename=True)
     return date_from_jd(jd, jd_start_greg)
 
 
@@ -169,7 +169,7 @@ def date_from_jd(jd, jd_start_greg=2299160.5):
 
 def jd2date_time(jd):
     """Obsolescent function.  Use date_time_from_jd() instead."""
-    _warn_obsolesent('jd2date_time', 'date_time_from_jd', rename=True, extra=True)
+    _warn_obsolescent('jd2date_time', 'date_time_from_jd', rename=True, extra=True)
     return date_time_from_jd(jd)
 
 
@@ -207,7 +207,7 @@ def date_time_from_jd(jd, jd_start_greg=2299160.5):
 
 def jd2year(jd):
     """Obsolescent function.  Use year_from_jd() instead."""
-    _warn_obsolesent('jd2year', 'year_from_jd', rename=True)
+    _warn_obsolescent('jd2year', 'year_from_jd', rename=True)
     return year_from_jd(jd)
 
 
@@ -331,7 +331,7 @@ def doy_from_datetime(date_time):
 
 def jd2tjc(jd):
     """Obsolescent function.  Use tjc_from_jd() instead."""
-    _warn_obsolesent('jd2tjc', 'tjc_from_jd', rename=True)
+    _warn_obsolescent('jd2tjc', 'tjc_from_jd', rename=True)
     return tjc_from_jd(jd)
 
 
@@ -350,7 +350,7 @@ def tjc_from_jd(jd):
 
 def jd2tjm(jd):
     """Obsolescent function.  Use tjm_from_jd() instead."""
-    _warn_obsolesent('jd2tjm', 'tjm_from_jd', rename=True)
+    _warn_obsolescent('jd2tjm', 'tjm_from_jd', rename=True)
     return tjm_from_jd(jd)
 
 
@@ -369,7 +369,7 @@ def tjm_from_jd(jd):
 
 def deltat_1820(jd):
     """Obsolescent function.  Use deltat_from_jd_appr() instead."""
-    _warn_obsolesent('deltat_1820', 'deltat_from_jd_appr', rename=True)
+    _warn_obsolescent('deltat_1820', 'deltat_from_jd_appr', rename=True)
     return deltat_from_jd_appr(jd)
 
 
@@ -397,7 +397,7 @@ def deltat_from_jd_appr(jd):
 
 def deltat(jd):
     """Obsolescent function.  Use deltat_from_jd_ipol() instead."""
-    _warn_obsolesent('deltat', 'deltat_from_jd_ipol', rename=True)
+    _warn_obsolescent('deltat', 'deltat_from_jd_ipol', rename=True)
     return deltat_from_jd_ipol(jd)
 
 
@@ -450,7 +450,7 @@ def deltat_from_jd_ipol(jd):
 
 def gmst(jd):
     """Obsolescent function.  Use gmst_from_jd() instead."""
-    _warn_obsolesent('gmst', 'gmst_from_jd', rename=True, extra=True)
+    _warn_obsolescent('gmst', 'gmst_from_jd', rename=True, extra=True)
     return gmst_from_jd(jd)
 
 
@@ -531,10 +531,10 @@ def weekday_en_abbr_from_datetime(datetime):
     return weekdays[datetime.weekday()]
 
 
-def _warn_obsolesent(old_name, new_name, rename=False, extra=False):
-    """Warn that a function is obsolete and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
+def _warn_obsolescent(old_name, new_name, rename=False, extra=False):
+    """Warn that a function is obsolescent and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
-    sys.stderr.write('\nWarning: the AstroTool function '+old_name+'() is obsolesent and will be removed in a future version.')
+    sys.stderr.write('\nWarning: the AstroTool function '+old_name+'() is obsolescent and will be removed in a future version.')
     sys.stderr.write('  Use '+new_name+'() instead.')
     if rename:
         if extra:
