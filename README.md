@@ -26,11 +26,12 @@ installing by hand, you have to ensure these packages are installed as well.
 
 ## See also ##
 
-* [AstroConst](https://pypi.org/project/astroconst/): astronomical constants in Python
-* SolTrack: a free, fast and accurate [Python](https://pypi.org/project/soltrack/) or
-  [C/C++](http://soltrack.sourceforge.net/) routine to compute the position of the Sun
+* [AstroConst](https://pypi.org/project/astroconst/): a Python package that provides astronomical constants.
+* [SolTrack](https://pypi.org/project/soltrack/): a free, fast and accurate
+  [Python](https://pypi.org/project/soltrack/) or [C/C++](http://soltrack.sourceforge.net/) routine to compute
+  the position of the Sun.
 * [elp-mpp02](https://pypi.org/project/elp-mpp02/): accurate Moon positions using the lunar solution ELP/MPP02
-  in Python
+  in Python.
 * [libTheSky](http://libthesky.sourceforge.net/): a Fortran library to compute the positions of celestial
   bodies (Sun, Moon, planets, stars, asteroids, comets) and events (e.g. lunar phases) with great accuracy.
 
@@ -38,7 +39,7 @@ installing by hand, you have to ensure these packages are installed as well.
 ## References ##
 
 * Meeus, [Astronomical algorithms](https://www.willbell.com/math/MC1.HTM), 2nd Ed.
-* [Celestial mechanics in a nutshell (CMiaNS)](https://cmians.sourceforge.io/)
+* [Celestial mechanics in a nutshell (CMiaNS)](https://cmians.sourceforge.io/): online living document.
 * This Python code is being adapted from the Fortran implementation in
   [libTheSky](http://libthesky.sourceforge.net/)
 

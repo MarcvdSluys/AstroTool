@@ -261,11 +261,11 @@ def fix_date_time(year,month,day, hour,minute,second):
       - second (float):   Second of minute of time (0.000-59.999).
         
     Note:
-      - uses date_time2jd() and date_time_from_jd().
+      - uses jd_from_date_time() and date_time_from_jd().
     
     """
     
-    jd = date_time2jd(year,month,day, hour,minute,second)
+    jd = jd_from_date_time(year,month,day, hour,minute,second)
     year,month,day, hour,minute,second = date_time_from_jd(jd)
     
     return year,month,day, hour,minute,second
@@ -279,10 +279,9 @@ def doy_from_ymd(year, month, day):
       year (int):   Year of date.
       month (int):  Month of date.
       day (int):    Day of date.
-
+    
     Returns:
       (int):        Day of year.
-
     """
     
     if _np.ndim(year) > 0:  # Array-like:
@@ -293,13 +292,13 @@ def doy_from_ymd(year, month, day):
         
         ones     = _np.ones(year.shape)  # Array for first month and first day
         
-        today    = date_time2jd(year, month, _np.floor(day).astype(int),  0, 0, 0.0)
-        JanFirst = date_time2jd(year, ones, ones,  0, 0, 0.0)
+        today    = jd_from_date_time(year, month, _np.floor(day).astype(int),  0, 0, 0.0)
+        JanFirst = jd_from_date_time(year, ones, ones,  0, 0, 0.0)
         doy      = _np.floor(today - JanFirst + 1).astype(int)
         
     else:
-        today    = date_time2jd(year, month, int(_np.floor(day)),  0, 0, 0.0)
-        JanFirst = date_time2jd(year, 1, 1,  0, 0, 0.0)
+        today    = jd_from_date_time(year, month, int(_np.floor(day)),  0, 0, 0.0)
+        JanFirst = jd_from_date_time(year, 1, 1,  0, 0, 0.0)
         doy      = int(_np.floor(today - JanFirst + 1))
     
     return doy
@@ -669,8 +668,8 @@ if __name__ == '__main__':
     _deltat1 = deltat_from_jd_appr(_jd)
     _deltat2 = deltat_from_jd_ipol(_jd)
     _gmst    = gmst_from_jd(_jd)
-    # _gmst1  = gmst(_jd, _deltat1)
-    # _gmst2  = gmst(_jd, _deltat2)
+    # _gmst1  = gmst_from_jd(_jd, _deltat1)
+    # _gmst2  = gmst_from_jd(_jd, _deltat2)
     # print('Date:     ', datetimestr_from_jd(_jd))
     print('JD:       ', _jd)
     print('Delta T1: ', _deltat1,   's')
