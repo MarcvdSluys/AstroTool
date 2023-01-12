@@ -530,6 +530,118 @@ def weekday_en_abbr_from_datetime(datetime):
     return weekdays[datetime.weekday()]
 
 
+def gps_time_from_jd(jd):
+    """Compute GPS time from the Julian day.
+    
+    Args:
+      jd (float):  Julian day (days).
+    
+    Returns:
+      float:  GPS time (seconds since 1980-01-06, without leap seconds!).
+    
+    Note:
+      number of leap seconds on 1980-01-06 is 19.
+    """
+    
+    from astroconst import day_sol
+    gps_time = (jd - jd_from_date(1980, 1, 6))*day_sol + leap_seconds_from_jd(jd) - 19
+    
+    return gps_time
+
+
+def jd_from_gps_time(gps_time):
+    """Compute the Julian day from the GPS time.
+    
+    Args:
+      gps_time (float):  GPS time (seconds since 1980-01-06, without leap seconds!).
+    
+    Returns:
+      float:  Julian day (days).
+    
+    Note:
+      number of leap seconds on 1980-01-06 is 19.
+    """
+    
+    from astroconst import day_sol
+    jd = gps_time/day_sol + jd_from_date(1980, 1, 6)
+    jd -= (leap_seconds_from_jd(jd) - 19)/86400
+    
+    return jd
+
+
+def leap_seconds_from_jd(jd, warn=True):
+    """Brief description of function.
+
+    Parameters:
+      jd (float):   Julian day (days).
+      warn (bool):  Warn when offering a date before 1972 (defaults to True).
+
+    Returns:
+      (float):  (TAI-UTC), or the number of leap seconds.
+    
+    Note:
+      - Between 1961 and 1972, there were no leap seconds, but continuous functions to compute TAI-UTC.
+    
+    See:
+      - https://hpiers.obspm.fr/eoppc/bul/bulc/UTC-TAI.history
+    """
+    
+    jd        = _np.asarray(_np.copy(jd))  # Copy and typecast to numpy.ndarray
+    ls = _np.zeros_like(jd)         # Array with zeros and the shape of jd
+    
+    if warn & (jd.min() < jd_from_date(1972,1,1)):
+        print('Warning: the number of leap seconds is inaccurate before 1972')
+    
+    mjd = jd - 2400000.5  # Modified Julian day
+    
+    # Before 1961, there were no leap seconds.  Between 1961 and 1972, there were functions to compute TAI-UTC.
+    ls[jd >= jd_from_date(1961,1,1)]  =  1.4228180 + (mjd[jd >= jd_from_date(1961,1,1)]  - 37300) * 0.0012960  # Note that ls~0 around 1958-01-01x
+    ls[jd >= jd_from_date(1961,8,1)]  =  1.3728180 + (mjd[jd >= jd_from_date(1961,8,1)]  - 37300) * 0.0012960
+    ls[jd >= jd_from_date(1962,1,1)]  =  1.8458580 + (mjd[jd >= jd_from_date(1962,1,1)]  - 37665) * 0.0011232
+    ls[jd >= jd_from_date(1963,11,1)] =  1.9458580 + (mjd[jd >= jd_from_date(1963,11,1)] - 37665) * 0.0011232
+    ls[jd >= jd_from_date(1964,1,1)]  =  3.2401300 + (mjd[jd >= jd_from_date(1964,1,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1964,4,1)]  =  3.3401300 + (mjd[jd >= jd_from_date(1964,4,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1964,9,1)]  =  3.4401300 + (mjd[jd >= jd_from_date(1964,9,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1965,1,1)]  =  3.5401300 + (mjd[jd >= jd_from_date(1965,1,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1965,3,1)]  =  3.6401300 + (mjd[jd >= jd_from_date(1965,3,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1965,7,1)]  =  3.7401300 + (mjd[jd >= jd_from_date(1965,7,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1965,9,1)]  =  3.8401300 + (mjd[jd >= jd_from_date(1965,9,1)]  - 38761) * 0.0012960
+    ls[jd >= jd_from_date(1966,1,1)]  =  4.3131700 + (mjd[jd >= jd_from_date(1966,1,1)]  - 39126) * 0.0025920
+    ls[jd >= jd_from_date(1968,2,1)]  =  4.2131700 + (mjd[jd >= jd_from_date(1968,2,1)]  - 39126) * 0.0025920
+    
+    # Leap seconds:
+    ls[jd >= jd_from_date(1972,1,1)] = 10
+    ls[jd >= jd_from_date(1972,7,1)] += 1  # Leap second on 1972-07-01
+    ls[jd >= jd_from_date(1973,1,1)] += 1  # Leap second on 1973-01-01
+    ls[jd >= jd_from_date(1974,1,1)] += 1  # Leap second on 1974-01-01
+    ls[jd >= jd_from_date(1975,1,1)] += 1  # Leap second on 1975-01-01
+    ls[jd >= jd_from_date(1976,1,1)] += 1  # Leap second on 1976-01-01
+    ls[jd >= jd_from_date(1977,1,1)] += 1  # Leap second on 1977-01-01
+    ls[jd >= jd_from_date(1978,1,1)] += 1  # Leap second on 1978-01-01
+    ls[jd >= jd_from_date(1979,1,1)] += 1  # Leap second on 1979-01-01
+    ls[jd >= jd_from_date(1980,1,1)] += 1  # Leap second on 1980-01-01
+    ls[jd >= jd_from_date(1981,7,1)] += 1  # Leap second on 1981-07-01
+    ls[jd >= jd_from_date(1982,7,1)] += 1  # Leap second on 1982-07-01
+    ls[jd >= jd_from_date(1983,7,1)] += 1  # Leap second on 1983-07-01
+    ls[jd >= jd_from_date(1985,7,1)] += 1  # Leap second on 1985-07-01
+    ls[jd >= jd_from_date(1988,1,1)] += 1  # Leap second on 1988-01-01
+    ls[jd >= jd_from_date(1990,1,1)] += 1  # Leap second on 1990-01-01
+    ls[jd >= jd_from_date(1991,1,1)] += 1  # Leap second on 1991-01-01
+    ls[jd >= jd_from_date(1992,7,1)] += 1  # Leap second on 1992-07-01
+    ls[jd >= jd_from_date(1993,7,1)] += 1  # Leap second on 1993-07-01
+    ls[jd >= jd_from_date(1994,7,1)] += 1  # Leap second on 1994-07-01
+    ls[jd >= jd_from_date(1996,1,1)] += 1  # Leap second on 1996-01-01
+    ls[jd >= jd_from_date(1997,7,1)] += 1  # Leap second on 1997-07-01
+    ls[jd >= jd_from_date(1999,1,1)] += 1  # Leap second on 1999-01-01
+    ls[jd >= jd_from_date(2006,1,1)] += 1  # Leap second on 2006-01-01
+    ls[jd >= jd_from_date(2009,1,1)] += 1  # Leap second on 2009-01-01
+    ls[jd >= jd_from_date(2012,7,1)] += 1  # Leap second on 2012-07-01
+    ls[jd >= jd_from_date(2015,7,1)] += 1  # Leap second on 2015-07-01
+    ls[jd >= jd_from_date(2017,1,1)] += 1  # Leap second on 2017-01-01
+    
+    return _np.squeeze(ls)
+
+
 def _warn_obsolescent(old_name, new_name, rename=False, extra=False):
     """Warn that a function is obsolescent and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
@@ -677,5 +789,24 @@ if __name__ == '__main__':
     print('GMST:     ', _gmst*_r2h,  'h')
     # print('GMST1:    ', _gmst1*_r2h, 'h')
     # print('GMST2:    ', _gmst2*_r2h, 'h')
+    
+    
+    # Leap seconds and GPS times:
+    _years  = _np.linspace(1960,2020, 13)
+    _jds = jd_from_date(_years,1,1)
+    
+    # GPS times, scalar:
+    _gps_time = gps_time_from_jd(_jd)
+    print('Leap secs: ', leap_seconds_from_jd(_jd))
+    print('GPS time:  ', _gps_time)
+    print('JD:        ', jd_from_gps_time(_gps_time))
+    
+    # GPS times, arrays:
+    print(_jds)
+    _gps_times = gps_time_from_jd(_jds)
+    print('Years: ',     _years)
+    print('Leap secs: ', leap_seconds_from_jd(_jds))
+    print('GPS times: ', _gps_times)
+    print('JDs:       ', jd_from_gps_time(_gps_times))
     
     
