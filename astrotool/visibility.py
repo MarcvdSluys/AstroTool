@@ -118,7 +118,7 @@ def sky_brightness_mlim_from_cdm2(cdm2):
 
 
 def sky_brightness_cdm2_from_mlim(mlim):
-    """Convert sky brightness in candela per square meter to a limiting visual magnitude.
+    """Convert limiting visual magnitude to sky brightness in candela per square meter.
     
     Parameters:
       mlim (float):  Sky brightness as limiting magnitude.
