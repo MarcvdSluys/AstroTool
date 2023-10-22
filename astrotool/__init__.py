@@ -8,7 +8,7 @@
 #  see: http://astro.ru.nl/~sluys/AstroTool/
 #   
 #  AstroTool has been developed by Marc van der Sluys of the Department of Physics at Utrecht
-#  University, the Netherlands and the Netherlands Institute for Nuclear and High-Energy Pysics (Nikhef)
+#  University in the Netherlands, and the Netherlands Institute for Nuclear and High-Energy Physics (Nikhef)
 #  in Amsterdam.
 #   
 #  This is free software: you can redistribute it and/or modify it under the terms of the
