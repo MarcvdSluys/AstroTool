@@ -8,7 +8,7 @@
 #  see: http://astro.ru.nl/~sluys/AstroTool/
 #   
 #  AstroTool has been developed by Marc van der Sluys of the Department of Physics at Utrecht
-#  University, the Netherlands and the Netherlands Institute for Nuclear and High-Energy Pysics (Nikhef)
+#  University in the Netherlands, and the Netherlands Institute for Nuclear and High-Energy Physics (Nikhef)
 #  in Amsterdam.
 #   
 #  This is free software: you can redistribute it and/or modify it under the terms of the
@@ -53,7 +53,7 @@ def jd_from_date(year,month,day, jd_start_greg=2299160.5):
       float:  jd: Julian day (days).
       
     Note:
-      - The JD will be in the same timezone as the date and time (UT for the offical JD).
+      - The JD will be in the same timezone as the date and time (use UTC for the offical JD).
       - Decimals can be used in the day to take into account the time of day other than midnight, e.g. 1.5 for
         noon on the first day of the month.
     """
@@ -102,12 +102,29 @@ def jd_from_date_time(year,month,day, hour,minute,second, jd_start_greg=2299160.
       float:  jd: Julian day (days).
       
     Note:
-      - The JD will be in the same timezone as the date and time (UT for the offical JD).
+      - The JD will be in the same timezone as the date and time (use UTC for the offical JD).
       - Decimals can be used in the second.
     """
     
     day_f = day + hour/24 + minute/1440 + second/86400    # Day with time as fraction
     return jd_from_date(year,month,day_f, jd_start_greg)
+
+
+def jd_from_datetime(dtm, jd_start_greg=2299160.5):
+    """Compute the Julian Day from given year, month, day, hour, minute and second.
+    
+    Args:
+      dtm (dt.datetime):      Datetime object.
+      jd_start_greg (float):  JD of start of Gregorian calendar (optional; default=2299160.5 = 1582-10-15.0).
+    
+    Returns:
+      float:  jd: Julian day (days).
+      
+    Note:
+      - The JD will be in the same timezone as the date and time (use UTC for the offical JD).
+    """
+    day_f = dtm.day + dtm.hour/24 + dtm.minute/1440 + dtm.second/86400    # Day with time as fraction
+    return jd_from_date(dtm.year,dtm.month,day_f, jd_start_greg)
 
 
 def jd2ymd(jd, jd_start_greg=2299160.5):
