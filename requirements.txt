@@ -1,3 +1,4 @@
-astroconst==0.0.8
+astroconst==0.0.9
 colored_traceback==0.3.0
 numpy==1.25.2
+pandas==1.5.3
