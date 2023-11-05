@@ -267,6 +267,29 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
     return lon_tc,lat_tc,rad_tc
 
 
+def position_angle(lon1,lat1, lon2,lat2):
+    """Calculate the position angle of object 2 with respect to object 1, counterclockwise from the north.
+    
+    Parameters:
+      lon1 (float):  Longitude of object 1 (rad).
+      lat1 (float):  Latitude of object 1 (rad).
+    
+      lon2 (float):  Longitude of object 2 (rad).
+      lat2 (float):  Latitude of object 2 (rad).
+    
+    Returns:
+      (float):  Position angle (rad).
+    
+    Note:
+      You may want to swap object1 and object2 for e.g. right ascension, which increases in the other direction.
+    """
+    
+    dlon = lon2-lon1
+    pa   = _np.arctan2( _np.sin(dlon),  _np.cos(lat1)*_np.tan(lat2) - _np.sin(lat1)*_np.cos(dlon) )
+    
+    return pa
+    
+
 # Test code:
 if __name__ == '__main__':
     print(geoc2topoc_ecl(0.0,0.0, _au,_au/1000, 23*_d2r,0.0, 52*_d2r,0.0, debug=True))  # CHECK: _au/1000 doesn't make sense - need apparent diameter!
