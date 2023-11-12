@@ -3,12 +3,11 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-# py-modules = []
 packages = ["astrotool"]
 
 [project]
 name = "astrotool"
-version = "0.0.12"
+version = "0.0.13"
 authors = [ { name="Marc van der Sluys", email="git@vandersluys.nl" } ]
 description = "A Python package for astronomical calculations in Python or on the command line"
 readme   = "README.md"
