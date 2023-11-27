@@ -659,6 +659,67 @@ def leap_seconds_from_jd(jd, warn=True):
     return _np.squeeze(ls)
 
 
+def hms_str_from_time(time, use_sec=True, use_ms=False, use_mus=False, use_ns=False):
+    """Return a float time in hours as a formatted string in hours, minutes (and seconds).
+    
+    Parameters:
+      time (float):    Time in hours.
+      use_sec (bool):  Use seconds in the string.  Optional, defaults to True.
+      use_ms (bool):   Use milliseconds in the string.  Optional, defaults to False.
+      use_mus (bool):  Use microseconds in the string.  Optional, defaults to False.
+      use_ns (bool):   Use nanoseconds in the string.  Optional, defaults to False.
+    
+    Returns:
+      (str):  Time in hours, minutes and seconds of the format hh:mm(:ss(.sss(sss(sss)))).
+    """
+    
+    hr  = _np.floor(time).astype(int)
+    mnt = _np.floor((time-hr)*60).astype(int)
+    sec = (time-hr-mnt/60)*3600
+    
+    if use_ns or use_mus or use_ms or (not use_sec):
+        if (use_ns and (sec >= 59.9999999995)) or (use_mus and (sec >= 59.9999995)) or \
+           (use_ms and (sec >= 59.9995)) or (not use_sec and (sec >= 30)):
+            sec = 0
+            mnt = mnt+1
+    elif (use_sec and (sec >= 59.5)):  # Separate, since use_sec is True by default
+        sec = 0
+        mnt = mnt+1
+        
+    if (mnt >= 60):
+        mnt = mnt - 60
+        hr = hr+1
+    if hr >= 24: hr -= 24
+    
+    if use_ns:
+        hms_str = '%2.2i:%2.2i:%012.9f' % (hr, mnt, sec)
+    elif use_mus:
+        hms_str = '%2.2i:%2.2i:%09.6f' % (hr, mnt, sec)
+    elif use_ms:
+        hms_str = '%2.2i:%2.2i:%06.3f' % (hr, mnt, sec)
+    elif use_sec:
+        hms_str = '%2.2i:%2.2i:%2.2i' % (hr, mnt, _np.round(sec,0).astype(int))
+    else:
+        hms_str = '%2.2i:%2.2i' % (hr, mnt)
+        
+    return hms_str
+
+
+def hm_str_from_time(time):
+    """Return a float time in hours as a formatted string in hours and minutes: hh:mm.
+    
+    Parameters:
+      time (float):       Time in hours.
+    
+    Returns:
+      (str):  Time in hours and minutes in the format hh:mm.
+    
+    Note: wrapper for hms_str_from_time().
+    """
+        
+    return hms_str_from_time(time, use_sec=False)
+
+
 def _warn_obsolescent(old_name, new_name, rename=False, extra=False):
     """Warn that a function is obsolescent and will be removed.  Indicate whether this concerns a simple rename, possibly with extra features."""
     import sys
@@ -826,4 +887,11 @@ if __name__ == '__main__':
     print('GPS times: ', _gps_times)
     print('JDs:       ', jd_from_gps_time(_gps_times))
     
+    _time = 23 + 59/60 + 59.9999999999/3600
+    print('hms_str_from_time(): ', hms_str_from_time(_time, use_ns=True))
+    print('hms_str_from_time(): ', hms_str_from_time(_time, use_mus=True))
+    print('hms_str_from_time(): ', hms_str_from_time(_time, use_ms=True))
+    print('hms_str_from_time(): ', hms_str_from_time(_time, use_sec=True))
+    print('hms_str_from_time(): ', hms_str_from_time(_time, use_sec=False))
+    print('hm_str_from_time():  ', hm_str_from_time(_time))
     
