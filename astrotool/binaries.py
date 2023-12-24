@@ -70,6 +70,72 @@ def orb_p_from_a(m1,m2, a_orb):
     return p_orb
 
 
+def orb_en_from_a(m1,m2, a_orb):
+    """Compute the orbital energy from the masses and orbital separation.
+    
+    Parameters:
+      m1 (float):     Mass of object 1 (Mo).
+      m2 (float):     Mass of object 2 (Mo).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Orbital energy (absolute value - J).
+    """
+    
+    return _ac.g * m1*m2*_ac.m_sun**2 / (2*a_orb*_ac.r_sun)
+
+
+def orb_a_from_en(m1,m2, e_orb):
+    """Compute the orbital separation from the masses and orbital energy.
+    
+    Parameters:
+      m1 (float):     Mass of object 1 (Mo).
+      m2 (float):     Mass of object 2 (Mo).
+      e_orb (float):  Orbital energy (J).
+    
+    Returns:
+      (float):  Orbital separation (Ro).
+    """
+    
+    a_orb = (_ac.g * m1*m2*_ac.m_sun**2) / (2 * e_orb)  / _ac.r_sun  # in Ro
+    
+    return a_orb
+
+
+def orb_am_from_a(m1,m2, a_orb):
+    """Compute the orbital angular momentum from the masses and orbital separation.
+    
+    Parameters:
+      m1 (float):     Mass of object 1 (Mo).
+      m2 (float):     Mass of object 2 (Mo).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Orbital angular momentum (J s).
+    """
+    
+    Mtot = (m1+m2) * _ac.m_sun
+    l_orb = m1*m2*_ac.m_sun**2 * _np.sqrt(_ac.g*a_orb*_ac.r_sun/Mtot)
+    
+    return l_orb
+
+
+def orb_a_from_am(m1,m2, l_orb):
+    """Compute the orbital separation from the masses and orbital angular momentum.
+    
+    Parameters:
+      m1 (float):     Mass of object 1 (Mo).
+      m2 (float):     Mass of object 2 (Mo).
+      l_orb (float):  Orbital angular momentum (J s).
+    
+    Returns:
+      (float):  Orbital separation (Ro).
+    """
+    
+    Mtot = (m1+m2) * _ac.m_sun
+    a_orb = Mtot/_ac.g * _np.square(l_orb / (m1*m2*_ac.m_sun**2)) / _ac.r_sun
+    
+    return a_orb
 
 
 # Test code:
