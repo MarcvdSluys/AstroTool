@@ -38,8 +38,8 @@ def orb_a_from_p(m1,m2, p_orb):
     """Compute the orbital separation from the masses and orbital period using Kepler's law.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       p_orb (float):  Orbital period (days).
     
     Returns:
@@ -56,8 +56,8 @@ def orb_p_from_a(m1,m2, a_orb):
     """Compute the orbital period from the masses and orbital separation using Kepler's law.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       a_orb (float):  Orbital separation (Ro).
     
     Returns:
@@ -74,8 +74,8 @@ def orb_en_from_a(m1,m2, a_orb):
     """Compute the orbital energy from the masses and orbital separation.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       a_orb (float):  Orbital separation (Ro).
     
     Returns:
@@ -89,8 +89,8 @@ def orb_a_from_en(m1,m2, e_orb):
     """Compute the orbital separation from the masses and orbital energy.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       e_orb (float):  Orbital energy (J).
     
     Returns:
@@ -106,8 +106,8 @@ def orb_am_from_a(m1,m2, a_orb):
     """Compute the orbital angular momentum from the masses and orbital separation.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       a_orb (float):  Orbital separation (Ro).
     
     Returns:
@@ -124,8 +124,8 @@ def orb_a_from_am(m1,m2, l_orb):
     """Compute the orbital separation from the masses and orbital angular momentum.
     
     Parameters:
-      m1 (float):     Mass of object 1 (Mo).
-      m2 (float):     Mass of object 2 (Mo).
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
       l_orb (float):  Orbital angular momentum (J s).
     
     Returns:
@@ -136,6 +136,59 @@ def orb_a_from_am(m1,m2, l_orb):
     a_orb = Mtot/_ac.g * _np.square(l_orb / (m1*m2*_ac.m_sun**2)) / _ac.r_sun
     
     return a_orb
+
+
+def roche_lobe_from_a_pac(m1,m2, a_orb):
+    """Compute the Roche lobe from the masses and orbital separation using Paczynski (1967).
+    
+    Parameters:
+      m1 (float):     Mass of star 1 (arbitrary).
+      m2 (float):     Mass of star 2 (same as m1).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Roche lobe of the star with m1 (same as a_orb).
+    
+    Note: fixed typo from the original paper.
+    """
+    
+    return 2/3**(4/3) * a_orb * (m1/(m1+m2))**(1/3)
+
+
+def roche_lobe_from_a_egg(m1,m2, a_orb):
+    """Compute the Roche lobe from the masses and orbital separation using Eggleton (1983).
+    
+    Parameters:
+      m1 (float):     Mass of star 1 (arbitrary).
+      m2 (float):     Mass of star 2 (same as m1).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Roche lobe of the star with m1 (same as a_orb).
+    """
+    
+    q1 = m1/m2
+    q123 = q1**(2/3)
+    r_rl = a_orb * 0.49*q123 / (0.6*q123 + _np.log(1+q1**(1/3)))  # Note: ln()
+    
+    return r_rl
+
+
+def roche_lobe_from_a_egg_simpl(m1,m2, a_orb):
+    """Compute the Roche lobe from the masses and orbital separation using simplified Eggleton (2006).
+    
+    Parameters:
+      m1 (float):     Mass of star 1 (arbitrary).
+      m2 (float):     Mass of star 2 (same as m1).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Roche lobe of the star with m1 (same as a_orb).
+    """
+    
+    q1 = m1/m2
+    
+    return a_orb * 0.44*q1**0.33 / (1 + q1)**0.2
 
 
 # Test code:
