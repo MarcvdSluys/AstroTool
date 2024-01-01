@@ -191,6 +191,48 @@ def roche_lobe_from_a_egg_simpl(m1,m2, a_orb):
     return a_orb * 0.44*q1**0.33 / (1 + q1)**0.2
 
 
+def roche_lobe_accel_l1(r2, m1,m2, aorb):
+    """Return the acceleration (the gradient of the potential = F/m) for a distance r2 "in front of" star 2
+    (as seen from the centre of mass) on the line connecting the stars with masses m1 and m2 of the binary
+    with orbital separation aorb.  This is useful to find the position of the first Lagrangian point L1.
+    
+    Parameters:
+      r2 (float):    Distance "before" star 2, as seen from the centre of mass, in terms of aorb.
+      m1 (float):    Mass of star 1.
+      m2 (float):    Mass of star 2.
+      aorb (float):  Orbital separation of the two stars.
+    
+    Returns:
+      (float):  acceleration at the given point.
+    """
+    
+    mtot = m1+m2
+    a2 = m1/mtot * aorb
+    accel = m1/(aorb-r2)**2 - m2/r2**2 - (a2-r2)*mtot/aorb**3
+    return accel
+
+
+def roche_lobe_accel_l2(r2, m1,m2, aorb):
+    """Return the acceleration (the gradient of the potential = F/m) for a distance r2 "behind" star 2 (as
+    seen from the centre of mass) on the line connecting the stars with masses m1 and m2 of the binary with
+    orbital separation aorb.  This is useful to find the position of the second Lagrangian point L2.
+    
+    Parameters:
+      r2 (float):    Distance "behind" star 2, as seen from the centre of mass, in terms of aorb.
+      m1 (float):    Mass of star 1.
+      m2 (float):    Mass of star 2.
+      aorb (float):  Orbital separation of the two stars.
+    
+    Returns:
+      (float):  acceleration at the given point.
+    """
+    
+    mtot = m1+m2
+    a2 = m1/mtot * aorb
+    accel = -m1/(aorb+r2)**2 - m2/r2**2 + (a2+r2)*mtot/aorb**3
+    return accel
+
+
 # Test code:
 if __name__ == '__main__':
     pass
