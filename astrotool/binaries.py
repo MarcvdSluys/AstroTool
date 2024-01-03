@@ -233,6 +233,27 @@ def roche_lobe_accel_l2(r2, m1,m2, aorb):
     return accel
 
 
+def roche_lobe_accel_l3(r1, m1,m2, aorb):
+    """Return the acceleration (the gradient of the potential = F/m) for a distance r3 "behind" star 1 (as
+    seen from the centre of mass) on the line connecting the stars with masses m1 and m2 of the binary with
+    orbital separation aorb.  This is useful to find the position of the second Lagrangian point L3.
+    
+    Parameters:
+      r1 (float):    Distance "behind" star 1, as seen from the centre of mass, in terms of aorb.
+      m1 (float):    Mass of star 1.
+      m2 (float):    Mass of star 2.
+      aorb (float):  Orbital separation of the two stars.
+    
+    Returns:
+      (float):  acceleration at the given point.
+    """
+    
+    mtot = m1+m2
+    a1 = m2/mtot * aorb
+    accel = -m1/(aorb-r1)**2 - m2/(2*aorb-r1)**2 + (a1+aorb-r1)*mtot/aorb**3
+    return accel
+
+
 # Test code:
 if __name__ == '__main__':
     pass
