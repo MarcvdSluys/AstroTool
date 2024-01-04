@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # SPDX-License-Identifier: EUPL-1.2
 
-#  Copyright (c) 2019-2023  Marc van der Sluys - marc.vandersluys.nl
+#  Copyright (c) 2019-2024  Marc van der Sluys - marc.vandersluys.nl
 #  
 #  This file is part of the AstroTool Python package,
 #  see: http://astro.ru.nl/~sluys/AstroTool/
