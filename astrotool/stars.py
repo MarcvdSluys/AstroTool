@@ -93,6 +93,61 @@ def rgb_rad_from_mc_it84(mc):
     return 10**3.5 * mc**4
 
 
+def rgb_coremass_at_R25Ro_from_mass(mass):
+    """Return the helium core mass where an RGB star reaches a radius of 25Ro, as a function of the total
+    mass.
+    
+    Parameters:
+      mass (float):  Total mass (0.8-3.0Mo).
+    
+    Returns:
+      (float):  Helium core mass.
+    
+    Notes:
+      - Fit made for 0.8-3.0Mo, Z=0.02.
+    """
+    
+    mass = _np.asarray(_np.copy(mass))  # Copy and typecast to numpy.ndarray
+    scalar_input = False
+    if mass.ndim == 0:
+        mass = mass[None]  # Makes mass a 1D array.  Comment: use np.newaxis instead?
+        scalar_input = True
+    
+    mc = _np.zeros_like(mass, dtype=float)  # Ensure float, calculation below goes wrong as int!
+    mc[mass<=2.05] = 0.295 + 1.69e-03 * _np.power(mass[mass<=2.05], 4.51)  # Mean/med. |abs. diff.|: 0.000666 / 0.000562 Mo;  mean/med. |rel. diff.|: 0.00208 / 0.00159 (frac)
+    mc[mass >2.05] = 0.278 + 2.13e-03 * _np.power(mass[mass >2.05], 3.79)  # Mean/med. |abs. diff.|: 0.000736 / 0.000452 Mo;  mean/med. |rel. diff.|: 0.00230 / 0.00139 (frac)
+    
+    if scalar_input:
+        return _np.squeeze(mc)  # Arrays -> "scalars".  Note: type will still be np.array(scalar)
+    
+    return mc
+
+
+def rgb_radius_from_mass_coremass(mass, mc):
+    """Return an estimate of the radius of a low-mass (0.8-3Mo) RGB star from its total mass and He core mass.
+    
+    Parameters:
+      mass (float):  Total stellar mass (Mo).
+      mc (float):    Helium core mass (Mo).
+    
+    Returns:
+      (float):  Radius of the star (Ro).
+    
+    Notes:
+      - Fit made for 0.8-3.0Mo, Z=0.02.  Accuracy:
+        - 0.8-1.3Mo:  ~9-12%;
+        - 1.4-2.3Mo: ~16-23%;
+        - 2.4-2.6Mo: ~44-47%;
+        - 2.7-3.0Mo: ~57-75%.
+        - if non-existing core masses are used (e.g. 0.1Mo for a 2.0Mo star), the error will be (much) larger.
+    """
+    
+    mcl = mc + rgb_coremass_at_R25Ro_from_mass(1) - rgb_coremass_at_R25Ro_from_mass(mass)  # Shift in core mass
+    rad = 1.71961 + _np.power(10, -2.41695 + 17.3340*mcl - 15.8583 * _np.square(mcl))
+    
+    return rad
+
+
 # Test code:
 if __name__ == '__main__':
     pass
