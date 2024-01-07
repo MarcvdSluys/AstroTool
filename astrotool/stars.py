@@ -135,13 +135,16 @@ def rgb_radius_from_mass_coremass(mass, mc):
     
     Notes:
       - Fit made for 0.8-3.0Mo, Z=0.02.  Accuracy:
-        - 0.8-1.3Mo:  ~14-17%;
+        - 0.8-1.3Mo: ~14-17%;
         - 1.4-2.0Mo: ~21-29%;
         - 2.1-2.3Mo: ~18-21%;
         - 2.4-2.6Mo: ~35-39%;
         - 2.7-3.0Mo: ~50-66%.
-        - sticking to 0.8-2.0/2.3Mo can push the accuracy towards 10%;
-          - for more massive stars a different fit function may be preferred.
+        - sticking to 0.8-2.0/2.3Mo can push the accuracy towards 10%:
+          - Mmax = 3.0Mo: mean accuracy = 19% (more data points on longer low-mass tracks)
+          - Mmax = 2.5Mo: mean accuracy = 11%
+          - Mmax = 2.0Mo: mean accuracy =  8%
+          - for more massive stars (>2.0-2.5Mo) a different fit function may be preferred
     """
     
     mcl = mc + rgb_coremass_at_R25Ro_from_mass(1) - rgb_coremass_at_R25Ro_from_mass(mass)  # Shift in core mass
