@@ -114,8 +114,8 @@ def rgb_coremass_at_R25Ro_from_mass(mass):
         scalar_input = True
     
     mc = _np.zeros_like(mass, dtype=float)  # Ensure float, calculation below goes wrong as int!
-    mc[mass<=2.05] = 0.295 + 1.69e-03 * _np.power(mass[mass<=2.05], 4.51)  # Mean/med. |abs. diff.|: 0.000666 / 0.000562 Mo;  mean/med. |rel. diff.|: 0.00208 / 0.00159 (frac)
-    mc[mass >2.05] = 0.278 + 2.13e-03 * _np.power(mass[mass >2.05], 3.79)  # Mean/med. |abs. diff.|: 0.000736 / 0.000452 Mo;  mean/med. |rel. diff.|: 0.00230 / 0.00139 (frac)
+    mc[mass<=2.05] = 0.295 + 1.69e-3 * _np.power(mass[mass<=2.05], 4.51)  # Mean/med. |abs. diff.|: 0.000666 / 0.000562 Mo;  mean/med. |rel. diff.|: 0.00208 / 0.00159 (frac)
+    mc[mass >2.05] = 0.278 + 2.13e-3 * _np.power(mass[mass >2.05], 3.79)  # Mean/med. |abs. diff.|: 0.000736 / 0.000452 Mo;  mean/med. |rel. diff.|: 0.00230 / 0.00139 (frac)
     
     if scalar_input:
         return _np.squeeze(mc)  # Arrays -> "scalars".  Note: type will still be np.array(scalar)
@@ -135,16 +135,17 @@ def rgb_radius_from_mass_coremass(mass, mc):
     
     Notes:
       - Fit made for 0.8-3.0Mo, Z=0.02.  Accuracy:
-        - 0.8-1.3Mo:  ~9-12%;
-        - 1.4-2.3Mo: ~16-23%;
-        - 2.4-2.6Mo: ~44-47%;
-        - 2.7-3.0Mo: ~57-75%.
-        - if non-existing core masses are used (e.g. 0.1Mo for a 2.0Mo star), the error will be (much) larger.
+        - 0.8-1.3Mo:  ~14-17%;
+        - 1.4-2.0Mo: ~21-29%;
+        - 2.1-2.3Mo: ~18-21%;
+        - 2.4-2.6Mo: ~35-39%;
+        - 2.7-3.0Mo: ~50-66%.
+        - sticking to 0.8-2.0/2.3Mo can push the accuracy towards 10%;
+          - for more massive stars a different fit function may be preferred.
     """
     
     mcl = mc + rgb_coremass_at_R25Ro_from_mass(1) - rgb_coremass_at_R25Ro_from_mass(mass)  # Shift in core mass
-    rad = 1.71961 + _np.power(10, -2.41695 + 17.3340*mcl - 15.8583 * _np.square(mcl))
-    
+    rad = 1.71961 + 1.96840e-3 * _np.exp(43.1952*mcl - 40.6587*_np.square(mcl))  # a + b*exp[c*x + d*x^2]
     return rad
 
 
