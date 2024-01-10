@@ -254,6 +254,44 @@ def roche_lobe_accel_l3(r1, m1,m2, aorb):
     return accel
 
 
+def l2_from_q2(q2):
+    """Return an estimate of the distance between the second Lagrangian point and the centre of mass expressed
+    in a_orb, from the mass ratio q2=M2/M1.
+    
+    Parameters:
+      q2 (float):  The mass ratio M2/M1.
+    
+    Returns:
+      (float):  Distance between centre of mass and L2 in units of the binary orbital separation (a_orb).
+    
+    Notes:
+      - This model is a fit to more detailed calculations.  The fit is cut into two pieces, below and
+        above q2=0.19:
+        - q2<0.19:  function is an "ellipse" + linear term;
+        - q2>=0.19: function is a third-order polynomial;
+        - the function is quite continuous at q2=0.19, though its derivative is not.
+      - Accuracy:
+        - Mean/med. |relative difference|:  dl2/l2 = 0.0252% / 0.0237%;
+        - Max. |relative difference|:       dl2/l2 = 0.144% at q2 = 1.
+    """
+    
+    q2 = _np.asarray(_np.copy(q2), dtype=float)  # Copy and typecast to numpy.ndarray - ensure float!
+    
+    scalar_input = False
+    if q2.ndim == 0:
+        q2 = q2[None]  # Makes q2 a 1D array.
+        scalar_input = True
+    
+    l2 = _np.zeros_like(q2, dtype=float)  # Ensure float!
+    l2[q2<0.19]  = 0.997205 + 0.121484  * q2[q2<0.19]  + 0.251220 * _np.power(1.00813 - _np.power((0.202059-q2[q2<0.19])/0.201651, 3.99641), 0.315883)  # "Ellipse + linear"
+    l2[q2>=0.19] = 1.26849  + 0.0717643 * q2[q2>=0.19] - 0.296485 * _np.square(q2[q2>=0.19]) + 0.156368 * _np.power(q2[q2>=0.19], 3)  # 3rd-order polynomial
+    
+    if scalar_input:
+        return float(_np.squeeze(l2))  # Array -> scalar (float)
+    
+    return l2
+
+
 # Test code:
 if __name__ == '__main__':
     pass
