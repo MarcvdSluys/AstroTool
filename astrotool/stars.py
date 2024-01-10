@@ -48,7 +48,7 @@ def ms_rad_from_mass(mass):
     great for M~2.5Mo.
     """
     
-    mass = _np.asarray(_np.copy(mass))    # Copy and typecast to numpy.ndarray
+    mass = _np.asarray(_np.copy(mass), dtype=float)    # Copy and typecast to numpy.ndarray
     scalar_input = False
     if mass.ndim == 0:
         mass = mass[None]  # Makes x a 1D array.  Comment: use np.newaxis instead?
@@ -58,7 +58,7 @@ def ms_rad_from_mass(mass):
     rad[mass>1] = _np.power(mass[mass>1], 0.6)  # R/Ro ~ (M/Mo)^0.6 for M >= Mo
     
     if scalar_input:
-        return _np.squeeze(rad)  # Arrays -> "scalars".  Note: type will still be _np.array(scalar)
+        return float(_np.squeeze(rad))  # Array -> scalar (float)
     
     return rad
 
@@ -107,7 +107,7 @@ def rgb_coremass_at_R25Ro_from_mass(mass):
       - Fit made for 0.8-3.0Mo, Z=0.02.
     """
     
-    mass = _np.asarray(_np.copy(mass))  # Copy and typecast to numpy.ndarray
+    mass = _np.asarray(_np.copy(mass), dtype=float)  # Copy and typecast to numpy.ndarray
     scalar_input = False
     if mass.ndim == 0:
         mass = mass[None]  # Makes mass a 1D array.  Comment: use np.newaxis instead?
@@ -118,7 +118,7 @@ def rgb_coremass_at_R25Ro_from_mass(mass):
     mc[mass >2.05] = 0.278 + 2.13e-3 * _np.power(mass[mass >2.05], 3.79)  # Mean/med. |abs. diff.|: 0.000736 / 0.000452 Mo;  mean/med. |rel. diff.|: 0.00230 / 0.00139 (frac)
     
     if scalar_input:
-        return _np.squeeze(mc)  # Arrays -> "scalars".  Note: type will still be np.array(scalar)
+        return float(_np.squeeze(mc))  # Arrays -> "scalars".  Note: type will still be np.array(scalar)
     
     return mc
 
