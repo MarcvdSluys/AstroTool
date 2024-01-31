@@ -41,17 +41,31 @@ def orb_a_from_p():
     parser.add_argument('Porb', type=float, help='binary orbital period (days)')
     
     # Optional arguments:
-    parser.add_argument('-v', '--verbosity', action='count', default=0, help='increase output verbosity')  # Counts number of occurrences
+    # Mutually exclusive arguments:
+    verb  = parser.add_mutually_exclusive_group()
+    verb.add_argument('-v', '--verbosity', action='count', default=1, help='increase output verbosity')  # Counts number of occurrences
+    verb.add_argument('-q', '--quiet',     action='store_true', help='print result only')  # False by default
     
     args = parser.parse_args()
+    if args.quiet: args.verbosity=0
     
     aorb = binaries.orb_a_from_p(args.M1, args.M2, args.Porb)
     Rrl1 = binaries.roche_lobe_from_a_egg(args.M1, args.M2, aorb)
     Rrl2 = binaries.roche_lobe_from_a_egg(args.M2, args.M1, aorb)
     
-    print('a_orb = %0.3f Ro' % aorb)
-    print('R_Rl1 = %0.3f Ro' % Rrl1)
-    print('R_Rl2 = %0.3f Ro' % Rrl2)
+    if args.verbosity>0:
+        print('M1    = %0.3f Mo' % (args.M1))
+        print('M2    = %0.3f Mo' % (args.M2))
+        print('Porb  = %0.3f Mo' % (args.Porb))
+        print()
+        print('q1    = %0.3f Mo' % (args.M1/args.M2))
+        print('q2    = %0.3f Mo' % (args.M2/args.M1))
+        print()
+        print('a_orb = %0.3f Ro' % (aorb))
+        print('R_Rl1 = %0.3f Ro' % (Rrl1))
+        print('R_Rl2 = %0.3f Ro' % (Rrl2))
+    else:
+        print(aorb)
     
     return
 
