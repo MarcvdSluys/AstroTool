@@ -32,3 +32,6 @@ classifiers = [
 GitHub = "https://github.com/MarcvdSluys/AstroTool"
 ReadTheDocs = "https://astrotool.readthedocs.io"
 Homepage="http://astro.ru.nl/~sluys/AstroTool"
+
+[project.scripts]
+at-orb-a-from-p = "astrotool.cli_scripts:orb_a_from_p"
