@@ -35,3 +35,4 @@ Homepage="http://astro.ru.nl/~sluys/AstroTool"
 
 [project.scripts]
 at-orb-a-from-p = "astrotool.cli_scripts:orb_a_from_p"
+at-wd-radius-from-mass = "astrotool.cli_scripts:wd_radius_from_mass"

@@ -23,6 +23,7 @@
 
 
 import argparse
+from . import stars
 from . import binaries
 
 """CLI scripts/entrypoints for AstroTool."""
@@ -66,6 +67,30 @@ def orb_a_from_p():
         print('R_Rl2 = %0.3f Ro' % (Rrl2))
     else:
         print(aorb)
+    
+    return
+
+
+def wd_radius_from_mass():
+    """Cli wrapper for wd_radius_from_mass()."""
+    
+    # Parse com`mand-line arguments:
+    parser = argparse.ArgumentParser(description='Compute a white-dwarf radius from its mass.',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
+    
+    # Required arguments:
+    parser.add_argument('mass',   type=float, help='mass of the white dwarf (Mo)')
+    
+    parser.add_argument('-v', '--verbosity', action='count', default=0, help='increase output verbosity')  # Counts number of occurrences
+    
+    args = parser.parse_args()
+    
+    rad = stars.wd_radius_from_mass(args.mass)
+    if args.verbosity>0:
+        print('White-dwarf mass:   ', args.mass, 'Mo')
+        print('White-dwarf radius: ', rad,       'Ro  =  ',rad/0.00915375, 'Rearth')
+    else:
+        print(rad)
     
     return
 

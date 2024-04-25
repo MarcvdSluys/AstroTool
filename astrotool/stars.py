@@ -152,6 +152,28 @@ def rgb_radius_from_mass_coremass(mass, mc):
     return rad
 
 
+def wd_radius_from_mass(mass):
+    """Return the radius of a white dwarf from its mass.
+    
+    Parameters:
+      mass (float):  White-dwarf mass (Mo).
+    
+    Returns:
+      (float):  White-dwarf radius (Ro).
+    
+    Notes:
+      - Nauenberg (1972), Eq.27 (https://ui.adsabs.harvard.edu/abs/1972ApJ...175..417N).
+    """
+    
+    rad = _np.power(mass/1.454, 2/3)
+    radius = 0.01125*_np.sqrt(1/rad - rad)  # Orig Nauenberg (1972), Eq.27
+    
+    # rad = np.power(df.mass/1.44, 2/3)
+    # radius = 1.14e-2*np.sqrt(1/rad - rad)  # FV
+    
+    return radius
+
+
 # Test code:
 if __name__ == '__main__':
     pass
