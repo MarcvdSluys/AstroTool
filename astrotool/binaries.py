@@ -139,10 +139,10 @@ def orb_a_from_am(m1,m2, l_orb):
 
 
 def roche_lobe_from_a_pac(m1,m2, a_orb):
-    """Compute the Roche lobe from the masses and orbital separation using Paczynski (1967).
+    """Compute the Roche lobe for star 1 from the masses and orbital separation using Paczynski (1967).
     
     Parameters:
-      m1 (float):     Mass of star 1 (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
       a_orb (float):  Orbital separation (Ro).
     
@@ -152,14 +152,14 @@ def roche_lobe_from_a_pac(m1,m2, a_orb):
     Note: fixed typo from the original paper.
     """
     
-    return 2/3**(4/3) * a_orb * (m1/(m1+m2))**(1/3)
+    return 2/(3**(4/3)) * a_orb * (m1/(m1+m2))**(1/3)
 
 
 def roche_lobe_from_a_egg(m1,m2, a_orb):
-    """Compute the Roche lobe from the masses and orbital separation using Eggleton (1983).
+    """Compute the Roche lobe for star 1 from the masses and orbital separation using Eggleton (1983).
     
     Parameters:
-      m1 (float):     Mass of star 1 (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
       a_orb (float):  Orbital separation (Ro).
     
@@ -175,10 +175,10 @@ def roche_lobe_from_a_egg(m1,m2, a_orb):
 
 
 def roche_lobe_from_a_egg_simpl(m1,m2, a_orb):
-    """Compute the Roche lobe from the masses and orbital separation using simplified Eggleton (2006).
+    """Compute the Roche lobe for star 1 from the masses and orbital separation using simplified Eggleton (2006).
     
     Parameters:
-      m1 (float):     Mass of star 1 (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
       a_orb (float):  Orbital separation (Ro).
     
