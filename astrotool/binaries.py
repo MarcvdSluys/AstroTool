@@ -294,6 +294,41 @@ def l2_from_q2(q2):
     return l2
 
 
+def gw_merger_time_from_a(m1,m2, aorb):
+    """Return the merger time due to GWs for a binary with given masses and orbital separation.
+    
+    Parameters:
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      aorb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Merger time (yr).
+    """
+    
+    t_merge = 5/256 * _ac.c**5 / _ac.G**3 * _np.power(aorb * _ac.Rsun, 4) / (m1 * m2 * (m1+m2) * _ac.Msun**3)
+    
+    return t_merge / _ac.year
+    
+
+def gw_merger_time_from_P(m1,m2, Porb):
+    """Return the merger time due to GWs for a binary with given masses and orbital period.
+    
+    Parameters:
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      Porb (float):  Orbital period (days).
+    
+    Returns:
+      (float):  Merger time (yr).
+    """
+    
+    aorb = orb_a_from_p(m1,m2, Porb)
+    t_merge = 5/256 * _ac.c**5 / _ac.G**3 * _np.power(aorb * _ac.Rsun, 4) / (m1 * m2 * (m1+m2) * _ac.Msun**3)
+    
+    return t_merge / _ac.year
+    
+
 # Test code:
 if __name__ == '__main__':
     pass
