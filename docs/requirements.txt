@@ -1,5 +1,5 @@
 astrotool
-astroconst==0.0.10
+astroconst==0.0.12
 colored_traceback==0.3.0
 numpy
 sphinx-rtd-theme
