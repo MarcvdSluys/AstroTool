@@ -34,20 +34,20 @@ import numpy as _np
 import astroconst as _ac
 
 
-def orb_a_from_p(m1,m2, p_orb):
+def orb_a_from_p(m1,m2, Porb):
     """Compute the orbital separation from the masses and orbital period using Kepler's law.
     
     Parameters:
-      m1 (float):     Mass of star 1 (Mo).
-      m2 (float):     Mass of star 2 (Mo).
-      p_orb (float):  Orbital period (days).
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      Porb (float):  Orbital period (days).
     
     Returns:
       (float):  Orbital separation (Ro).
     """
     
     Mtot = (m1+m2) * _ac.m_sun
-    a_orb = ((_ac.g*Mtot)/(4*_ac.pi**2))**(1/3) * (p_orb*_ac.day)**(2/3) / _ac.r_sun
+    a_orb = ((_ac.g*Mtot)/(4*_ac.pi**2))**(1/3) * (Porb*_ac.day)**(2/3) / _ac.r_sun
     
     return a_orb
 
@@ -65,9 +65,9 @@ def orb_p_from_a(m1,m2, a_orb):
     """
     
     Mtot = (m1+m2) * _ac.m_sun
-    p_orb = _np.sqrt(4*_ac.pi**2/(_ac.g*Mtot)) * (a_orb*_ac.r_sun)**1.5 / _ac.day
+    Porb = _np.sqrt(4*_ac.pi**2/(_ac.g*Mtot)) * (a_orb*_ac.r_sun)**1.5 / _ac.day
     
-    return p_orb
+    return Porb
 
 
 def orb_en_from_a(m1,m2, a_orb):
@@ -111,29 +111,29 @@ def orb_am_from_a(m1,m2, a_orb):
       a_orb (float):  Orbital separation (Ro).
     
     Returns:
-      (float):  Orbital angular momentum (J s).
+      (float):  Orbital angular momentum (SI: J s).
     """
     
     Mtot = (m1+m2) * _ac.m_sun
-    l_orb = m1*m2*_ac.m_sun**2 * _np.sqrt(_ac.g*a_orb*_ac.r_sun/Mtot)
+    Jorb = m1*m2*_ac.m_sun**2 * _np.sqrt(_ac.g*a_orb*_ac.r_sun/Mtot)
     
-    return l_orb
+    return Jorb
 
 
-def orb_a_from_am(m1,m2, l_orb):
+def orb_a_from_am(m1,m2, Jorb):
     """Compute the orbital separation from the masses and orbital angular momentum.
     
     Parameters:
-      m1 (float):     Mass of star 1 (Mo).
-      m2 (float):     Mass of star 2 (Mo).
-      l_orb (float):  Orbital angular momentum (J s).
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      Jorb (float):  Orbital angular momentum (SI: J s).
     
     Returns:
       (float):  Orbital separation (Ro).
     """
     
     Mtot = (m1+m2) * _ac.m_sun
-    a_orb = Mtot/_ac.g * _np.square(l_orb / (m1*m2*_ac.m_sun**2)) / _ac.r_sun
+    a_orb = Mtot/_ac.g * _np.square(Jorb / (m1*m2*_ac.m_sun**2)) / _ac.r_sun
     
     return a_orb
 
@@ -293,6 +293,44 @@ def l2_from_q2(q2):
     
     return l2
 
+
+def gw_am_loss_from_a(m1,m2, aorb):
+    """Return the angular-momentum loss due to GWs for a binary with given masses and orbital separation.
+    
+    Parameters:
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      aorb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (float):  Angular-momentum loss dJ/dt (SI: J).
+    """
+    
+    mtot = m1 + m2
+    dJdt = -32/5 * _ac.G**(7/2) / _ac.c**5 * \
+        _np.square(m1 * m2 * _ac.Mo**2) * _np.sqrt(mtot*_ac.Mo) / _np.power(aorb*_ac.Ro, 7/2)
+    
+    return dJdt
+    
+
+def gw_am_loss_from_P(m1,m2, Porb):
+    """Return the angular-momentum loss due to GWs for a binary with given masses and orbital separation.
+    
+    Parameters:
+      m1 (float):    Mass of star 1 (Mo).
+      m2 (float):    Mass of star 2 (Mo).
+      Porb (float):  Orbital period (days).
+    
+    Returns:
+      (float):  Angular-momentum loss dJ/dt (SI: J).
+    """
+    
+    mtot = m1 + m2
+    dJdt = -32/5 * _ac.G**(7/3) / _ac.c**5 * \
+        _np.square(m1 * m2 * _ac.Mo**2 / _np.power(mtot*_ac.Mo, 1/3)) * _np.power(_ac.pi2 / (Porb*_ac.day), 7/3)
+    
+    return dJdt
+    
 
 def gw_merger_time_from_a(m1,m2, aorb):
     """Return the merger time due to GWs for a binary with given masses and orbital separation.
