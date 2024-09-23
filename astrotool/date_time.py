@@ -279,7 +279,6 @@ def fix_date_time(year,month,day, hour,minute,second):
         
     Note:
       - uses jd_from_date_time() and date_time_from_jd().
-    
     """
     
     jd = jd_from_date_time(year,month,day, hour,minute,second)
@@ -330,7 +329,6 @@ def doy_from_datetime(date_time):
       
     Returns:
       (int):        Day of year.
-      
     """
     
     if _np.ndim(date_time) > 0:  # Array-like:
@@ -343,6 +341,19 @@ def doy_from_datetime(date_time):
     
     return doy
 
+
+def month_length_from_year_month(year, month):
+    """Return the number of days in a given month.
+    
+    Parameters:
+      year (int):   Year CE (0=1BCE, -1=2BCE, etc.)
+      month (int):  Month (1-12).
+    
+    Returns:
+      (int):        Number of days in the desired month.
+    """
+    
+    return date_from_jd( jd_from_date(year,month+1,0))[2]  # Day 0 of next month == last DoM == month length
 
 
 def jd2tjc(jd):
