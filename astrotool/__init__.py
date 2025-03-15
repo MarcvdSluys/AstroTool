@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # SPDX-License-Identifier: EUPL-1.2
 
-#  Copyright (c) 2019-2024  Marc van der Sluys - marc.vandersluys.nl
+#  Copyright (c) 2019-2025  Marc van der Sluys - marc.vandersluys.nl
 #   
 #  This file is part of the AstroTool Python package,
-#  see: http://astro.ru.nl/~sluys/AstroTool/
+#  see: https://www.nikhef.nl/~sluys/AstroTool/
 #   
 #  AstroTool has been developed by Marc van der Sluys of the Department of Physics at Utrecht
 #  University in the Netherlands, and the Netherlands Institute for Nuclear and High-Energy Physics (Nikhef)
@@ -28,7 +28,7 @@
 AstroTool is a Python package to do basic astronomical calculations in Python or on the command line.  The
 package can be used under the conditions of the EUPL 1.2 licence.  These pages contain the API documentation.
 For more information on the Python package, licence, source code and data files, see the `AstroTool homepage
-<http://astro.ru.nl/~sluys/AstroTool/>`_.
+<https://www.nikhef.nl/~sluys/AstroTool/>`_.
 
 """
 
