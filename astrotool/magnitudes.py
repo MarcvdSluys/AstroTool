@@ -32,10 +32,10 @@ if __name__ == '__main__' and __package__ is None:
 # Modules:
 import numpy as _np
 
-# Constants:
-_bands = {'bol':18.99,                                            # Bolometric
-          'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37,  # Johnson UBVRI
-          'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
+# Constants for each photometric band:
+_bandconsts = {'bol':18.99,                                            # Bolometric
+               'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37,  # Johnson UBVRI
+               'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
 
 
 def flux_from_magnitude(mag, band='V'):
@@ -43,9 +43,9 @@ def flux_from_magnitude(mag, band='V'):
     
     Parameters:
       mag (float):   Magnitude of the object (-; ~ -2.5 log f)
-      band (float):  Spectral band.
+      band (float):  Photometric band.
     
-    Allowed spectral bands:
+    Available photometric bands:
       - 'bol':  bolometric
       - 'U':    Johnson U
       - 'B':    Johnson B
@@ -60,13 +60,13 @@ def flux_from_magnitude(mag, band='V'):
       (float):  Flux (W/m2).
     """
     
-    if band not in _bands:
+    if band not in _bandconsts:
         print('flux_from_magnitude(): unknown band: ', band)
-        print('Allowed bands are: ', _bands.keys())
+        print('Allowed bands are: ', _bandconsts.keys())
         print('Aborting...')
         exit(1)
         
-    flux = _np.power(10, -(mag+_bands[band])/2.5)
+    flux = _np.power(10, -(mag+_bandconsts[band])/2.5)
     
     return flux
 
@@ -75,10 +75,10 @@ def magnitude_from_flux(flux, band='V'):
     """Convert flux to magnitude.
     
     Parameters:
-      flux (float):   Flux of the object (W/m2)
-      band (float):  Spectral band.
+      flux (float):  Flux of the object (W/m2)
+      band (float):  Photometric band.
     
-    Allowed spectral bands:
+    Available photometric bands:
       - 'bol':  bolometric
       - 'U':    Johnson U
       - 'B':    Johnson B
@@ -93,14 +93,13 @@ def magnitude_from_flux(flux, band='V'):
       (float):  Magnitude of the object (-; ~ -2.5 log f).
     """
     
-    if band not in _bands:
+    if band not in _bandconsts:
         print('magnitude_from_flux(): unknown band: ', band)
-        print('Allowed bands are: ', _bands.keys())
+        print('Allowed bands are: ', _bandconsts.keys())
         print('Aborting...')
         exit(1)
         
-    # flux = _np.power(10, -(mag+_bands[band])/2.5)
-    mag = -2.5 * _np.log10(flux) - _bands[band]
+    mag = -2.5 * _np.log10(flux) - _bandconsts[band]
     
     return mag
 
@@ -126,7 +125,7 @@ if __name__ == '__main__':
     
     print()
     print()
-    print('Flux -> Mb:  %6.3f' % (magnitude_from_flux(2.535e-8, 'bol')))
+    print('Flux -> Mb:  %6.3f' % (magnitude_from_flux(2.535e-8,  'bol')))
     
     print('Flux -> U:   %6.3f' % (magnitude_from_flux(4.365e-11, 'U')))
     print('Flux -> B:   %6.3f' % (magnitude_from_flux(7.178e-11, 'B')))
