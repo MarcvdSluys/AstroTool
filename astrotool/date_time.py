@@ -937,21 +937,23 @@ if __name__ == '__main__':
     # GPS times, scalar:
     _gps_time = gps_time_from_jd(_jd)
     _datetime = datetime_from_gps_time(_gps_time)
-    print('Leap secs: ', leap_seconds_from_jd(_jd))
-    print('GPS time:  ', _gps_time)
-    print('JD:        ', jd_from_gps_time(_gps_time))
-    print('Datetime:  ', _datetime)
+    print('Leap secs:         ', leap_seconds_from_jd(_jd))
+    print('GPS time:          ', _gps_time)
+    print('JD from GPS time:  ', jd_from_gps_time(_gps_time))
+    print('Datetime:          ', _datetime)
+    print('JD from datetime:  ', jd_from_datetime(_datetime))
     
     
     # GPS times, arrays:
     print(_jds)
     _gps_times = gps_time_from_jd(_jds)
     _datetimes = datetime_from_gps_time(_gps_times)
-    print('Years: ',     _years)
-    print('Leap secs: ', leap_seconds_from_jd(_jds))
-    print('GPS times: ', _gps_times)
-    print('JDs:       ', jd_from_gps_time(_gps_times))
-    print('Datetimes: ', _datetimes)
+    print('Years:               ', _years)
+    print('Leap secs:           ', leap_seconds_from_jd(_jds))
+    print('GPS times:           ', _gps_times)
+    print('JDs from GPS times:  ', jd_from_gps_time(_gps_times))
+    print('Datetimes:           ', _datetimes)
+    print('JDs from datetimes:  ', jd_from_datetime(_datetimes))
     
     _time = 23 + 59/60 + 59.9999999999/3600
     print('hms_str_from_time(): ', hms_str_from_time(_time, use_ns=True))
