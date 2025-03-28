@@ -31,6 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
+import pandas as _pd
 import astroconst as _ac
 
 
@@ -665,6 +666,28 @@ def leap_seconds_from_jd(jd, warn=True):
     return _np.squeeze(ls)
 
 
+def datetime_from_gps_time(gpstime):
+    """Create datetime64 objects from gpstimes.
+    
+    Parameters:
+      gpstime (float):  Time in GPS-time format.
+    
+    Returns:
+      (numpy.datetime64):  (array of) datetime objects in UTC.
+    """
+    
+    gpstime = _np.asarray(_np.copy(gpstime))          # Copy and typecast to numpy.ndarray
+    if gpstime.ndim == 0:  gpstime = gpstime[None]  # Makes gpstime 1D.  Comment: use _np.newaxis instead?
+    
+    df = _pd.DataFrame()
+    df['jd'] = jd_from_gps_time(gpstime)
+    df['year'],df['month'],df['day'], df['hour'],df['minute'],df['second'] = date_time_from_jd(df.jd)
+    utc = _pd.to_datetime(df[['year','month','day','hour','minute','second']])  # Turn the columns in the df into a single datetime column
+    utc = utc.to_numpy()
+    
+    return _np.squeeze(utc)  # Arrays -> "scalars"
+
+
 def unix_time_from_jd(jd):
     """Compute UNIX time from the Julian day.
     
@@ -906,17 +929,22 @@ if __name__ == '__main__':
     
     # GPS times, scalar:
     _gps_time = gps_time_from_jd(_jd)
+    _datetime = datetime_from_gps_time(_gps_time)
     print('Leap secs: ', leap_seconds_from_jd(_jd))
     print('GPS time:  ', _gps_time)
     print('JD:        ', jd_from_gps_time(_gps_time))
+    print('Datetime:  ', _datetime)
+    
     
     # GPS times, arrays:
     print(_jds)
     _gps_times = gps_time_from_jd(_jds)
+    _datetimes = datetime_from_gps_time(_gps_times)
     print('Years: ',     _years)
     print('Leap secs: ', leap_seconds_from_jd(_jds))
     print('GPS times: ', _gps_times)
     print('JDs:       ', jd_from_gps_time(_gps_times))
+    print('Datetimes: ', _datetimes)
     
     _time = 23 + 59/60 + 59.9999999999/3600
     print('hms_str_from_time(): ', hms_str_from_time(_time, use_ns=True))
