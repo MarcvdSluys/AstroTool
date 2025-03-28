@@ -268,5 +268,6 @@ def geoc2topoc_ecl(lon_gc,lat_gc, dist_gc,rad_gc, eps,lst, lat_obs,ele_obs=0, de
 
 # Test code:
 if __name__ == '__main__':
-    print(geoc2topoc_ecl(0.0,0.0, _ac.au,_ac.au/1000, 23*_ac.d2r,0.0, 52*_ac.d2r,0.0, debug=True))  # CHECK: _ac.au/1000 doesn't make sense - need apparent diameter!
+    lon_tc,lat_tc,rad_tc = geoc2topoc_ecl(0.0,0.0, _ac.au,_ac.au/1000, 23*_ac.d2r,0.0, 52*_ac.d2r,0.0, debug=True)
+    print(lon_tc,lat_tc,rad_tc)  # CHECK: _ac.au/1000 doesn't make sense - need apparent diameter!
     
