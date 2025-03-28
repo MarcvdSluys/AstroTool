@@ -665,6 +665,32 @@ def leap_seconds_from_jd(jd, warn=True):
     return _np.squeeze(ls)
 
 
+def unix_time_from_jd(jd):
+    """Compute UNIX time from the Julian day.
+    
+    Args:
+      jd (float):  Julian day (days).
+    
+    Returns:
+      float:  UNIX time (seconds since 1970-01-01).
+    """
+    
+    return (jd - jd_from_date(1970, 1, 1))*_ac.day_sol
+
+
+def jd_from_unix_time(unix_time):
+    """Compute the Julian day from the UNIX time.
+    
+    Args:
+      unix_time (float):  UNIX time (seconds since 1970-01-01).
+    
+    Returns:
+      float:  Julian day (days).
+    """
+    
+    return unix_time/_ac.day_sol + jd_from_date(1970, 1, 1)
+
+
 def hms_str_from_time(time, use_sec=True, use_ms=False, use_mus=False, use_ns=False):
     """Return a float time in hours as a formatted string in hours, minutes (and seconds).
     
@@ -874,7 +900,7 @@ if __name__ == '__main__':
     # print('GMST2:    ', _gmst2*_r2h, 'h')
     
     
-    # Leap seconds and GPS times:
+    # Leap seconds, GPS times, UNIX times:
     _years  = _np.linspace(1960,2020, 13)
     _jds = jd_from_date(_years,1,1)
     
@@ -900,3 +926,12 @@ if __name__ == '__main__':
     print('hms_str_from_time(): ', hms_str_from_time(_time, use_sec=False))
     print('hm_str_from_time():  ', hm_str_from_time(_time))
     
+    # UNIX times, scalar:
+    _unix_time = unix_time_from_jd(_jd)
+    print('UNIX time:   ', _unix_time)
+    print('JD:          ', jd_from_unix_time(_unix_time))
+    
+    # UNIX times, array:
+    _unix_times = unix_time_from_jd(_jds)
+    print('UNIX times:  ', _unix_times)
+    print('JDs:         ', jd_from_unix_time(_unix_times))
