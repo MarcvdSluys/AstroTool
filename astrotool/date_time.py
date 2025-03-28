@@ -125,8 +125,15 @@ def jd_from_datetime(dtm, jd_start_greg=2299160.5):
     Note:
       - The JD will be in the same timezone as the date and time (use UTC for the offical JD).
     """
+    
+    dtm = _np.asarray(_np.copy(dtm))    # Copy and typecast to numpy.ndarray
+    if dtm.ndim == 0:  dtm = dtm[None]  # Makes dtm 1D.  Comment: use np.newaxis instead?
+    
+    dtm = _pd.to_datetime(dtm)
     day_f = dtm.day + dtm.hour/24 + dtm.minute/1440 + dtm.second/86400    # Day with time as fraction
-    return jd_from_date(dtm.year,dtm.month,day_f, jd_start_greg)
+    jd = jd_from_date(dtm.year, dtm.month, day_f, jd_start_greg)
+    
+    return _np.squeeze(jd)  # Arrays -> "scalars"
 
 
 def jd2ymd(jd, jd_start_greg=2299160.5):
