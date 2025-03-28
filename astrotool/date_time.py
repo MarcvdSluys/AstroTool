@@ -31,6 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
+import astroconst as _ac
 
 
 def julian_day(year,month,day, jd_start_greg=2299160.5):
@@ -416,10 +417,8 @@ def deltat_from_jd_appr(jd):
       - `Extrapolation of Delta T <http://hemel.waarnemen.com/Computing/deltat.html>`_.
     """
     
-    from astroconst import jd1820 as _jd1820
-    
     # return 12 + 0.5 * 1.8e-3/86400/(36525*86400) * ((jd-jd1820)*86400)**2  # Comprehensible notation
-    return 12 + 0.5 * 1.8e-3 / 36525 * (jd-_jd1820)**2                        # Simplified notation
+    return 12 + 0.5 * 1.8e-3 / 36525 * (jd-_ac.jd1820)**2                        # Simplified notation
 
 
 def deltat(jd):
@@ -495,9 +494,7 @@ def gmst_from_jd(jd, deltat=None):
       - Explanatory Supplement to the Astronomical Almanac, 3rd ed, Eq. 6.66 (2012).
     """
     
-    from astroconst import pi2 as _pi2, jd2000 as _jd2000
-    
-    tjd  = jd - _jd2000                     # Julian Days after 2000.0 UT
+    tjd  = jd - _ac.jd2000                     # Julian Days after 2000.0 UT
     coefs = [4.89496121042905, 6.30038809894828323, 5.05711849e-15, -4.378e-28, -8.1601415e-29, -2.7445e-36]       # Coefficients for the polynomial
     
     if deltat is None: deltat = 63.8285    # Use DeltaT from J2000 if unavailable
@@ -506,7 +503,7 @@ def gmst_from_jd(jd, deltat=None):
     for pow_i,coef_i in enumerate(coefs):  # Add the polynomial
         gmst += coef_i*tjd**pow_i
     
-    return gmst % _pi2
+    return gmst % _ac.pi2
 
 
 
@@ -571,8 +568,7 @@ def gps_time_from_jd(jd):
       number of leap seconds on 1980-01-06 is 19.
     """
     
-    from astroconst import day_sol
-    gps_time = (jd - jd_from_date(1980, 1, 6))*day_sol + leap_seconds_from_jd(jd) - 19
+    gps_time = (jd - jd_from_date(1980, 1, 6))*_ac.day_sol + leap_seconds_from_jd(jd) - 19
     
     return gps_time
 
@@ -590,8 +586,7 @@ def jd_from_gps_time(gps_time):
       number of leap seconds on 1980-01-06 is 19.
     """
     
-    from astroconst import day_sol
-    jd = gps_time/day_sol + jd_from_date(1980, 1, 6)
+    jd = gps_time/_ac.day_sol + jd_from_date(1980, 1, 6)
     jd -= (leap_seconds_from_jd(jd) - 19)/86400
     
     return jd
@@ -863,7 +858,6 @@ if __name__ == '__main__':
     print()
     print()
     print('ΔT and GMST for scalars:')
-    from astroconst import r2h as _r2h
     _jd = jd_from_date_time(2012,12,23, 12,34,56)
     # _jd = jd_from_date_time(2000,1,1, 0,0,0)
     _deltat1 = deltat_from_jd_appr(_jd)
@@ -875,7 +869,7 @@ if __name__ == '__main__':
     print('JD:       ', _jd)
     print('Delta T1: ', _deltat1,   's')
     print('Delta T2: ', _deltat2,   's')
-    print('GMST:     ', _gmst*_r2h,  'h')
+    print('GMST:     ', _gmst*_ac.r2h,  'h')
     # print('GMST1:    ', _gmst1*_r2h, 'h')
     # print('GMST2:    ', _gmst2*_r2h, 'h')
     
