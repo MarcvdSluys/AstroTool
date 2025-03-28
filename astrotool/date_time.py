@@ -674,7 +674,7 @@ def leap_seconds_from_jd(jd, warn=True):
 
 
 def datetime_from_gps_time(gpstime):
-    """Create datetime64 objects from gpstimes.
+    """Create datetime64 objects from GPS times.
     
     Parameters:
       gpstime (float):  Time in GPS-time format.
@@ -693,6 +693,27 @@ def datetime_from_gps_time(gpstime):
     utc = utc.to_numpy()
     
     return _np.squeeze(utc)  # Arrays -> "scalars"
+
+
+def gps_time_from_datetime(datetimes):
+    """Compute GPS times from datetime64 objects.
+    
+    Parameters:
+      datetimes (numpy.datetime64):  (array of) datetime objects in UTC.
+    
+    Returns:
+      (float):  (Array of) time(s) in GPS-time format.
+      
+    """
+    
+    datetimes = _np.asarray(_np.copy(datetimes))          # Copy and typecast to numpy.ndarray
+    if datetimes.ndim == 0:  datetimes = datetimes[None]  # Makes datetimes 1D.  Comment: use _np.newaxis instead?
+    
+    jds      = jd_from_datetime(datetimes)
+    gpstimes = gps_time_from_jd(jds)
+    
+    return _np.squeeze(gpstimes)  # Arrays -> "scalars"
+
 
 
 def unix_time_from_jd(jd):
@@ -931,29 +952,31 @@ if __name__ == '__main__':
     
     
     # Leap seconds, GPS times, UNIX times:
-    _years  = _np.linspace(1960,2020, 13)
+    _years  = _np.linspace(1960,2020, 13)  # Every 5 years
     _jds = jd_from_date(_years,1,1)
     
     # GPS times, scalar:
     _gps_time = gps_time_from_jd(_jd)
     _datetime = datetime_from_gps_time(_gps_time)
-    print('Leap secs:         ', leap_seconds_from_jd(_jd))
-    print('GPS time:          ', _gps_time)
-    print('JD from GPS time:  ', jd_from_gps_time(_gps_time))
-    print('Datetime:          ', _datetime)
-    print('JD from datetime:  ', jd_from_datetime(_datetime))
+    print('Leap secs:               ', leap_seconds_from_jd(_jd))
+    print('GPS time:                ', _gps_time)
+    print('JD from GPS time:        ', jd_from_gps_time(_gps_time))
+    print('Datetime:                ', _datetime)
+    print('JD from datetime:        ', jd_from_datetime(_datetime))
+    print('GPS time from datetime:  ', gps_time_from_datetime(_datetime))
     
     
     # GPS times, arrays:
     print(_jds)
     _gps_times = gps_time_from_jd(_jds)
     _datetimes = datetime_from_gps_time(_gps_times)
-    print('Years:               ', _years)
-    print('Leap secs:           ', leap_seconds_from_jd(_jds))
-    print('GPS times:           ', _gps_times)
-    print('JDs from GPS times:  ', jd_from_gps_time(_gps_times))
-    print('Datetimes:           ', _datetimes)
-    print('JDs from datetimes:  ', jd_from_datetime(_datetimes))
+    print('Years:                     ', _years)
+    print('Leap secs:                 ', leap_seconds_from_jd(_jds))
+    print('GPS times:                 ', _gps_times)
+    print('JDs from GPS times:        ', jd_from_gps_time(_gps_times))
+    print('Datetimes:                 ', _datetimes)
+    print('JDs from datetimes:        ', jd_from_datetime(_datetimes))
+    print('GPS times from datetimes:  ', gps_time_from_datetime(_datetimes))
     
     _time = 23 + 59/60 + 59.9999999999/3600
     print('hms_str_from_time(): ', hms_str_from_time(_time, use_ns=True))
