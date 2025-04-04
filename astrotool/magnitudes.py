@@ -33,9 +33,12 @@ if __name__ == '__main__' and __package__ is None:
 import numpy as _np
 
 # Constants for each photometric band:
-_bandconsts = {'bol':18.99,                                            # Bolometric
-               'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37,  # Johnson UBVRI
-               'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
+_band_mag0 = {'bol':18.99,                                            # Bolometric
+              'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37}  # Johnson UBVRI - Verbunt: Het leven van sterren, appendix
+# 'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
+               
+_band_eff_widths = {'bol':1,                                             # Bolometric: -
+                    'U':68, 'B':98, 'V':89, 'R':138, 'I':149}            # Johnson UBVRI: Δλ in nm - Verbunt: Het leven van sterren, appendix
 
 
 def flux_from_magnitude(mag, band='V'):
@@ -52,21 +55,21 @@ def flux_from_magnitude(mag, band='V'):
       - 'V':    Johnson V
       - 'R':    Johnson R
       - 'I':    Johnson I
-      - 'GG':   Gaia G
-      - 'GBP':  Gaia BP
-      - 'GRP':  Gaia RP
+      - 'GG':   Gaia G   - not implemented!
+      - 'GBP':  Gaia BP  - not implemented!
+      - 'GRP':  Gaia RP  - not implemented!
     
     Returns:
       (float):  Flux (W/m2).
     """
     
-    if band not in _bandconsts:
+    if band not in _band_mag0:
         print('flux_from_magnitude(): unknown band: ', band)
-        print('Allowed bands are: ', _bandconsts.keys())
+        print('Allowed bands are: ', _band_mag0.keys())
         print('Aborting...')
         exit(1)
         
-    flux = _np.power(10, -(mag+_bandconsts[band])/2.5)
+    flux = _np.power(10, -(mag+_band_mag0[band])/2.5) * _band_eff_widths[band]
     
     return flux
 
@@ -85,21 +88,21 @@ def magnitude_from_flux(flux, band='V'):
       - 'V':    Johnson V
       - 'R':    Johnson R
       - 'I':    Johnson I
-      - 'GG':   Gaia G
-      - 'GBP':  Gaia BP
-      - 'GRP':  Gaia RP
+      - 'GG':   Gaia G   - not implemented!
+      - 'GBP':  Gaia BP  - not implemented!
+      - 'GRP':  Gaia RP  - not implemented!
     
     Returns:
       (float):  Magnitude of the object (-; ~ -2.5 log f).
     """
     
-    if band not in _bandconsts:
+    if band not in _band_mag0:
         print('magnitude_from_flux(): unknown band: ', band)
-        print('Allowed bands are: ', _bandconsts.keys())
+        print('Allowed bands are: ', _band_mag0.keys())
         print('Aborting...')
         exit(1)
         
-    mag = -2.5 * _np.log10(flux) - _bandconsts[band]
+    mag = -2.5 * _np.log10(flux) / _band_eff_widths[band] - _band_mag0[band]
     
     return mag
 
@@ -117,10 +120,10 @@ if __name__ == '__main__':
     print('Flux R=0   (2.18e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'R')))
     print('Flux I=0   (1.13e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'I')))
     
-    print()
-    print('Flux Gaia G=0:   %10.3e' % (flux_from_magnitude(0.0, 'GG')))
-    print('Flux Gaia BP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GBP')))
-    print('Flux Gaia RP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GRP')))
+    # print()
+    # print('Flux Gaia G=0:   %10.3e' % (flux_from_magnitude(0.0, 'GG')))
+    # print('Flux Gaia BP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GBP')))
+    # print('Flux Gaia RP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GRP')))
     
     
     print()
@@ -133,10 +136,10 @@ if __name__ == '__main__':
     print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.168e-11, 'R')))
     print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.127e-11, 'I')))
     
-    print()
-    print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(5.304e-11, 'GG')))
-    print('Flux -> Gaia BP:  %6.3f' % (magnitude_from_flux(7.235e-11, 'GBP')))
-    print('Flux -> Gaia RP:  %6.3f' % (magnitude_from_flux(1.245e-10, 'GRP')))
+    # print()
+    # print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(5.304e-11, 'GG')))
+    # print('Flux -> Gaia BP:  %6.3f' % (magnitude_from_flux(7.235e-11, 'GBP')))
+    # print('Flux -> Gaia RP:  %6.3f' % (magnitude_from_flux(1.245e-10, 'GRP')))
     
     # print()
     # print('Flux I=0   (1.13e-11 watt/m2/nm):  %10.2e' % (magnitude_from_flux(0.0, 'BLA')))
