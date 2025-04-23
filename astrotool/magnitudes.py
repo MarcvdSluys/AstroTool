@@ -33,8 +33,8 @@ if __name__ == '__main__' and __package__ is None:
 import numpy as _np
 
 # Constants for each photometric band: f_0 in W/m^2:
-_band_flux0 = {'bol':2.5351e-8,                                            # Bolometric - Verbunt: Het leven van sterren, appendix
-               'U':2.9683e-9, 'B':7.0344e-9, 'V':3.4785e-9, 'R':2.9914e-9, 'I':1.6795e-9}  # Johnson UBVRI - Verbunt: Het leven van sterren, appendix
+_band_flux0 = {'bol':2.518e-8,                                                   # Bolometric - IAU Resolution B2 (2015): https://arxiv.org/abs/1510.06262
+               'U':3.97e-9, 'B':6.13e-9, 'V':3.63e-9, 'R':2.17e-9, 'I':1.13e-9}  # Bessell/Johnson UBVRI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=Generic&gname2=Bessell
 
 
 def flux_from_magnitude(mag, band='V'):
@@ -108,13 +108,13 @@ if __name__ == '__main__':
     import colored_traceback as _clrtrb
     _clrtrb.add_hook()
     
-    print('Flux Mb=0  (2.54e-8  watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'bol')))
+    print('Flux Mb=0  (2.518e-8 watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'bol')))
     
-    print('Flux U=0   (4.35e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'U')))
-    print('Flux B=0   (7.19e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'B')))
-    print('Flux V=0   (3.92e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'V')))
-    print('Flux R=0   (2.18e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'R')))
-    print('Flux I=0   (1.13e-11 watt/m2/nm):  %10.3e' % (flux_from_magnitude(0.0, 'I')))
+    print('Flux U=0   (3.97e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'U')))
+    print('Flux B=0   (6.13e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'B')))
+    print('Flux V=0   (3.63e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'V')))
+    print('Flux R=0   (2.17e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'R')))
+    print('Flux I=0   (1.13e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'I')))
     
     # print()
     # print('Flux Gaia G=0:   %10.3e' % (flux_from_magnitude(0.0, 'GG')))
@@ -124,13 +124,13 @@ if __name__ == '__main__':
     
     print()
     print()
-    print('Flux -> Mb:  %6.3f' % (magnitude_from_flux(2.535e-8,  'bol')))
+    print('Flux -> Mb:  %6.3f' % (magnitude_from_flux(2.518e-8,  'bol')))
     
-    print('Flux -> U:   %6.3f' % (magnitude_from_flux(2.968e-09, 'U')))
-    print('Flux -> B:   %6.3f' % (magnitude_from_flux(7.034e-09, 'B')))
-    print('Flux -> V:   %6.3f' % (magnitude_from_flux(3.478e-09, 'V')))
-    print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.991e-09, 'R')))
-    print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.680e-09, 'I')))
+    print('Flux -> U:   %6.3f' % (magnitude_from_flux(3.97e-9, 'U')))
+    print('Flux -> B:   %6.3f' % (magnitude_from_flux(6.13e-9, 'B')))
+    print('Flux -> V:   %6.3f' % (magnitude_from_flux(3.63e-9, 'V')))
+    print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.17e-9, 'R')))
+    print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.13e-9, 'I')))
     
     # print()
     # print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(5.304e-11, 'GG')))
