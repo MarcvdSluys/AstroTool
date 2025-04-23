@@ -32,13 +32,9 @@ if __name__ == '__main__' and __package__ is None:
 # Modules:
 import numpy as _np
 
-# Constants for each photometric band:
-_band_mag0 = {'bol':18.99,                                            # Bolometric - Verbunt: Het leven van sterren, appendix
-              'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37}  # Johnson UBVRI - Verbunt: Het leven van sterren, appendix
-# 'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
-               
-_band_eff_widths = {'bol':1,                                             # Bolometric: -
-                    'U':68, 'B':98, 'V':89, 'R':138, 'I':149}            # Johnson UBVRI: Δλ in nm - Verbunt: Het leven van sterren, appendix
+# Constants for each photometric band: f_0 in W/m^2:
+_band_flux0 = {'bol':2.5351e-8,                                            # Bolometric - Verbunt: Het leven van sterren, appendix
+               'U':2.9683e-9, 'B':7.0344e-9, 'V':3.4785e-9, 'R':2.9914e-9, 'I':1.6795e-9}  # Johnson UBVRI - Verbunt: Het leven van sterren, appendix
 
 
 def flux_from_magnitude(mag, band='V'):
@@ -63,13 +59,13 @@ def flux_from_magnitude(mag, band='V'):
       (float):  Flux (W/m2).
     """
     
-    if band not in _band_mag0:
+    if band not in _band_flux0:
         print('flux_from_magnitude(): unknown band: ', band)
-        print('Allowed bands are: ', _band_mag0.keys())
+        print('Allowed bands are: ', _band_flux0.keys())
         print('Aborting...')
         exit(1)
         
-    flux = _np.power(10, -(mag+_band_mag0[band])/2.5) * _band_eff_widths[band]
+    flux = _band_flux0[band] * _np.power(10, -mag/2.5)
     
     return flux
 
@@ -96,13 +92,13 @@ def magnitude_from_flux(flux, band='V'):
       (float):  Magnitude of the object (-; ~ -2.5 log f).
     """
     
-    if band not in _band_mag0:
+    if band not in _band_flux0:
         print('magnitude_from_flux(): unknown band: ', band)
-        print('Allowed bands are: ', _band_mag0.keys())
+        print('Allowed bands are: ', _band_flux0.keys())
         print('Aborting...')
         exit(1)
         
-    mag = _band_mag0[band] + 2.5 * _np.log10(flux / _band_eff_widths[band])
+    mag = -2.5 * _np.log10(flux/_band_flux0[band])
     
     return mag
 
