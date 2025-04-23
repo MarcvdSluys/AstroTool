@@ -33,7 +33,7 @@ if __name__ == '__main__' and __package__ is None:
 import numpy as _np
 
 # Constants for each photometric band:
-_band_mag0 = {'bol':18.99,                                            # Bolometric
+_band_mag0 = {'bol':18.99,                                            # Bolometric - Verbunt: Het leven van sterren, appendix
               'U':25.90, 'B':25.36, 'V':26.02, 'R':26.66, 'I':27.37}  # Johnson UBVRI - Verbunt: Het leven van sterren, appendix
 # 'GG':25.6884, 'GBP':25.3514, 'GRP':24.7619}             # Gaia: https://dc.g-vo.org/tableinfo/gaia.dr2epochflux
                
@@ -102,7 +102,7 @@ def magnitude_from_flux(flux, band='V'):
         print('Aborting...')
         exit(1)
         
-    mag = -2.5 * _np.log10(flux) / _band_eff_widths[band] - _band_mag0[band]
+    mag = _band_mag0[band] + 2.5 * _np.log10(flux / _band_eff_widths[band])
     
     return mag
 
@@ -130,11 +130,11 @@ if __name__ == '__main__':
     print()
     print('Flux -> Mb:  %6.3f' % (magnitude_from_flux(2.535e-8,  'bol')))
     
-    print('Flux -> U:   %6.3f' % (magnitude_from_flux(4.365e-11, 'U')))
-    print('Flux -> B:   %6.3f' % (magnitude_from_flux(7.178e-11, 'B')))
-    print('Flux -> V:   %6.3f' % (magnitude_from_flux(3.908e-11, 'V')))
-    print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.168e-11, 'R')))
-    print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.127e-11, 'I')))
+    print('Flux -> U:   %6.3f' % (magnitude_from_flux(2.968e-09, 'U')))
+    print('Flux -> B:   %6.3f' % (magnitude_from_flux(7.034e-09, 'B')))
+    print('Flux -> V:   %6.3f' % (magnitude_from_flux(3.478e-09, 'V')))
+    print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.991e-09, 'R')))
+    print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.680e-09, 'I')))
     
     # print()
     # print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(5.304e-11, 'GG')))
