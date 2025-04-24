@@ -34,7 +34,10 @@ import numpy as _np
 
 # Constants for each photometric band: f_0 in W/m^2:
 _band_flux0 = {'bol':2.518e-8,                                                   # Bolometric - IAU Resolution B2 (2015): https://arxiv.org/abs/1510.06262
-               'U':3.97e-9, 'B':6.13e-9, 'V':3.63e-9, 'R':2.17e-9, 'I':1.13e-9}  # Bessell/Johnson UBVRI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=Generic&gname2=Bessell
+               'U':3.97e-9, 'B':6.13e-9, 'V':3.63e-9, 'R':2.17e-9, 'I':1.13e-9,  # Bessell/Johnson UBVRI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=Generic&gname2=Bessell
+               'Ks_SOFI':4.21e-11,                                               # Ks (IR) filter on La Silla/NTT/SOFI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=LaSilla&gname2=SOFI
+               'GG':2.49e-9, 'GBP':4.04e-9, 'GRP':1.28e-9                        # Gaia DR2 revised filters: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=GAIA&gname2=GAIA2r
+               }
 
 
 def flux_from_magnitude(mag, band='V'):
@@ -45,15 +48,10 @@ def flux_from_magnitude(mag, band='V'):
       band (float):  Photometric band.
     
     Available photometric bands:
-      - 'bol':  bolometric
-      - 'U':    Johnson U
-      - 'B':    Johnson B
-      - 'V':    Johnson V
-      - 'R':    Johnson R
-      - 'I':    Johnson I
-      - 'GG':   Gaia G   - not implemented!
-      - 'GBP':  Gaia BP  - not implemented!
-      - 'GRP':  Gaia RP  - not implemented!
+      - 'bol':                Bolometric
+      - 'U','B','V','R','I':  Johnson UBVRI
+      - 'Ks_SOFI:             Ks (IR) filter on La Silla/NTT/SOFI
+      - 'GG','GBP','GRP':     Gaia G, BP, RP
     
     Returns:
       (float):  Flux (W/m2).
@@ -78,15 +76,10 @@ def magnitude_from_flux(flux, band='V'):
       band (float):  Photometric band.
     
     Available photometric bands:
-      - 'bol':  bolometric
-      - 'U':    Johnson U
-      - 'B':    Johnson B
-      - 'V':    Johnson V
-      - 'R':    Johnson R
-      - 'I':    Johnson I
-      - 'GG':   Gaia G   - not implemented!
-      - 'GBP':  Gaia BP  - not implemented!
-      - 'GRP':  Gaia RP  - not implemented!
+      - 'bol':                Bolometric
+      - 'U','B','V','R','I':  Johnson UBVRI
+      - 'Ks_SOFI:             Ks (IR) filter on La Silla/NTT/SOFI
+      - 'GG','GBP','GRP':     Gaia G, BP, RP
     
     Returns:
       (float):  Magnitude of the object (-; ~ -2.5 log f).
@@ -116,10 +109,13 @@ if __name__ == '__main__':
     print('Flux R=0   (2.17e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'R')))
     print('Flux I=0   (1.13e-9  watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'I')))
     
-    # print()
-    # print('Flux Gaia G=0:   %10.3e' % (flux_from_magnitude(0.0, 'GG')))
-    # print('Flux Gaia BP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GBP')))
-    # print('Flux Gaia RP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GRP')))
+    print()
+    print('Flux Ks=0  (4.21e-11 watt/m2):  %10.3e' % (flux_from_magnitude(0.0, 'Ks_SOFI')))
+    
+    print()
+    print('Flux Gaia G=0:   %10.3e' % (flux_from_magnitude(0.0, 'GG')))
+    print('Flux Gaia BP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GBP')))
+    print('Flux Gaia RP=0:  %10.3e' % (flux_from_magnitude(0.0, 'GRP')))
     
     
     print()
@@ -132,10 +128,13 @@ if __name__ == '__main__':
     print('Flux -> R:   %6.3f' % (magnitude_from_flux(2.17e-9, 'R')))
     print('Flux -> I:   %6.3f' % (magnitude_from_flux(1.13e-9, 'I')))
     
-    # print()
-    # print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(5.304e-11, 'GG')))
-    # print('Flux -> Gaia BP:  %6.3f' % (magnitude_from_flux(7.235e-11, 'GBP')))
-    # print('Flux -> Gaia RP:  %6.3f' % (magnitude_from_flux(1.245e-10, 'GRP')))
+    print()
+    print('Flux -> SOFI Ks:  %6.3f' % (magnitude_from_flux(4.21e-11, 'Ks_SOFI')))
+    
+    print()
+    print('Flux -> Gaia G:   %6.3f' % (magnitude_from_flux(2.49e-9, 'GG')))
+    print('Flux -> Gaia BP:  %6.3f' % (magnitude_from_flux(4.04e-9, 'GBP')))
+    print('Flux -> Gaia RP:  %6.3f' % (magnitude_from_flux(1.28e-9, 'GRP')))
     
     # print()
     # print('Flux I=0   (1.13e-11 watt/m2/nm):  %10.2e' % (magnitude_from_flux(0.0, 'BLA')))
