@@ -22,9 +22,9 @@
 #  If not, see <https://www.eupl.eu/1.2/en/>.
 
 
-import argparse
-from . import stars
-from . import binaries
+import argparse as _ap
+from . import stars as _st
+from . import binaries as _bin
 
 """CLI scripts/entrypoints for AstroTool."""
 
@@ -33,8 +33,8 @@ def orb_a_from_p():
     """Cli wrapper for orb_a_from_p()."""
     
     # Parse command-line arguments:
-    parser = argparse.ArgumentParser(description='Compute binary orbital separation from orbital period.',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
+    parser = _ap.ArgumentParser(description='Compute binary orbital separation from orbital period.',
+                                formatter_class=_ap.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
     
     # Required arguments:
     parser.add_argument('M1',   type=float, help='mass of star 1 (Mo)')
@@ -50,9 +50,9 @@ def orb_a_from_p():
     args = parser.parse_args()
     if args.quiet: args.verbosity=0
     
-    aorb = binaries.orb_a_from_p(args.M1, args.M2, args.Porb)
-    Rrl1 = binaries.roche_lobe_from_a_egg(args.M1, args.M2, aorb)
-    Rrl2 = binaries.roche_lobe_from_a_egg(args.M2, args.M1, aorb)
+    aorb = _bin.orb_a_from_p(args.M1, args.M2, args.Porb)
+    Rrl1 = _bin.roche_lobe_from_a_egg(args.M1, args.M2, aorb)
+    Rrl2 = _bin.roche_lobe_from_a_egg(args.M2, args.M1, aorb)
     
     if args.verbosity>0:
         print('M1    = %0.3f Mo' % (args.M1))
@@ -75,8 +75,8 @@ def wd_radius_from_mass():
     """Cli wrapper for wd_radius_from_mass()."""
     
     # Parse com`mand-line arguments:
-    parser = argparse.ArgumentParser(description='Compute a white-dwarf radius from its mass.',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
+    parser = _ap.ArgumentParser(description='Compute a white-dwarf radius from its mass.',
+                                formatter_class=_ap.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
     
     # Required arguments:
     parser.add_argument('mass',   type=float, help='mass of the white dwarf (Mo)')
@@ -85,7 +85,7 @@ def wd_radius_from_mass():
     
     args = parser.parse_args()
     
-    rad = stars.wd_radius_from_mass(args.mass)
+    rad = _st.wd_radius_from_mass(args.mass)
     if args.verbosity>0:
         print('White-dwarf mass:   ', args.mass, 'Mo')
         print('White-dwarf radius: ', rad,       'Ro  =  ',rad/0.00915375, 'Rearth')
