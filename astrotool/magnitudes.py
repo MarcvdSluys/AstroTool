@@ -36,7 +36,9 @@ import numpy as _np
 _band_flux0 = {'bol':2.518e-8,                                                   # Bolometric - IAU Resolution B2 (2015): https://arxiv.org/abs/1510.06262
                'U':3.97e-9, 'B':6.13e-9, 'V':3.63e-9, 'R':2.17e-9, 'I':1.13e-9,  # Bessell/Johnson UBVRI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=Generic&gname2=Bessell
                'Ks_SOFI':4.21e-11,                                               # Ks (IR) filter on La Silla/NTT/SOFI: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=LaSilla&gname2=SOFI
-               'GG':2.49e-9, 'GBP':4.04e-9, 'GRP':1.28e-9                        # Gaia DR2 revised filters: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=GAIA&gname2=GAIA2r
+               'GG':2.49e-9, 'GBP':4.04e-9, 'GRP':1.28e-9,                       # Gaia DR2 revised filters: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=GAIA&gname2=GAIA2r
+               'SDSS_u':3.75e-9,   'SDSS_g':5.45e-9,   'SDSS_r':2.5e-9,    'SDSS_i':1.39e-9,   'SDSS_z':8.39e-10,   # SDSS filters: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=SLOAN
+               'SDSS_upr':3.56e-9, 'SDSS_gpr':5.28e-9, 'SDSS_rpr':2.42e-9, 'SDSS_ipr':2.42e-9, 'SDSS_zpr':4.88e-10  # SDSS prime filters: https://svo2.cab.inta-csic.es/theory/fps/index.php?gname=SLOAN
                }
 
 
