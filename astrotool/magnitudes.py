@@ -31,6 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
+import astroconst as _ac
 
 # Constants for each photometric band: f_0 in W/m^2:
 _band_flux0 = {'bol':2.518e-8,                                                   # Bolometric - IAU Resolution B2 (2015): https://arxiv.org/abs/1510.06262
@@ -96,6 +97,23 @@ def magnitude_from_flux(flux, band='V'):
     mag = -2.5 * _np.log10(flux/_band_flux0[band])
     
     return mag
+
+
+def luminosity_from_flux_at_10pc(flux):
+    """Compute the luminosity in W from the flux measured at a distance of 10pc.
+    
+    Useful after conversion of absolute magnitude to flux.
+    
+    Parameters:
+      flux (float):  Flux of the object in some band or bolometric (W/m2).
+    
+    Returns:
+      (float):  Luminosity of the object in that band (W).
+    """
+    
+    lum = flux * 4*_ac.pi*(10*_ac.pc)**2
+    
+    return lum
 
 
 # Test code:
