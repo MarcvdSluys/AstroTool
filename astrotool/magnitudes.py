@@ -159,3 +159,6 @@ if __name__ == '__main__':
     # print()
     # print('Flux I=0   (1.13e-11 watt/m2/nm):  %10.2e' % (magnitude_from_flux(0.0, 'BLA')))
  
+    print()
+    print('Flux @10pc -> L(W):  %0.5g' % (luminosity_from_flux_at_10pc(1e-10)))  # 1.1965e+26
+    
