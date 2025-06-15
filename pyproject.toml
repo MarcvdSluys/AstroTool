@@ -7,7 +7,7 @@ packages = ["astrotool"]
 
 [project]
 name = "astrotool"
-version = "0.0.22"
+version = "0.0.23"
 authors = [ { name="Marc van der Sluys", email="git@vandersluys.nl" } ]
 description = "A Python package for astronomical calculations in Python or on the command line"
 readme   = "README.md"
