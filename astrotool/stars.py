@@ -79,6 +79,21 @@ def ms_lum_from_mass(mass):
     return _np.power(mass, 3.8)
 
 
+def ms_time_from_mass(mass):
+    """Return an estimate of the main-sequence lifetime of a star from its mass, using ms_lum_from_mass().
+    
+    Parameters:
+      mass (float):  mass of the star (Mo).
+    
+    Returns:
+      (float):  Estimated main-sequence lifetime of the star (yr).
+    """
+    
+    ms_time = 1e10 * mass / ms_lum_from_mass(mass)  # 10 Gyr (M/Mo) (L/Lo)^-1
+    
+    return ms_time
+
+
 def rgb_rad_from_mc_it84(mc):
     """Return an estimate of the radius of a (red) giant based on its (He) core mass, using Iben and Tutukov
     (1984).
