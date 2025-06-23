@@ -155,6 +155,23 @@ def roche_lobe_from_a_pac(m1,m2, a_orb):
     return 2/(3**(4/3)) * a_orb * (m1/(m1+m2))**(1/3)
 
 
+def orb_a_from_roche_lobe_pac(m1,m2, Rrl1):
+    """Compute the orbital separation from the Roche-lobe radius of star 1 and the masses, using Paczynski (1967).
+    
+    Parameters:
+      m1 (float):     Mass of star 1, for which the Roche-lobe radius should be computed (arbitrary).
+      m2 (float):     Mass of star 2 (same as m1).
+      Rrl1 (float):   Roche-lobe radius of the star with m1 (any length unit).
+    
+    Returns:
+      (float):  Orbital separation (same length unit as Rrl1).
+    
+    Note: fixed typo from the original paper.
+    """
+    
+    return Rrl1 * 3**(4/3)/2 * ((m1+m2)/m1)**(1/3)
+
+
 def roche_lobe_from_a_egg(m1,m2, a_orb):
     """Compute the Roche-lobe radius for star 1 from the masses and orbital separation, using Eggleton (1983).
     
