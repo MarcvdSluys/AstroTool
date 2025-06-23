@@ -139,15 +139,15 @@ def orb_a_from_am(m1,m2, Jorb):
 
 
 def roche_lobe_from_a_pac(m1,m2, a_orb):
-    """Compute the Roche lobe for star 1 from the masses and orbital separation using Paczynski (1967).
+    """Compute the Roche-lobe radius for star 1 from the masses and orbital separation, using Paczynski (1967).
     
     Parameters:
-      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche-lobe radius should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
       a_orb (float):  Orbital separation (Ro).
     
     Returns:
-      (float):  Roche lobe of the star with m1 (same as a_orb).
+      (float):  Roche-lobe radius of the star with m1 (same as a_orb).
     
     Note: fixed typo from the original paper.
     """
@@ -156,15 +156,15 @@ def roche_lobe_from_a_pac(m1,m2, a_orb):
 
 
 def roche_lobe_from_a_egg(m1,m2, a_orb):
-    """Compute the Roche lobe for star 1 from the masses and orbital separation using Eggleton (1983).
+    """Compute the Roche-lobe radius for star 1 from the masses and orbital separation, using Eggleton (1983).
     
     Parameters:
-      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche-lobe radius should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
-      a_orb (float):  Orbital separation (Ro).
+      a_orb (float):  Orbital separation (any length unit).
     
     Returns:
-      (float):  Roche lobe of the star with m1 (same as a_orb).
+      (float):  Roche-lobe radius of the star with m1 (same length unit as a_orb).
     """
     
     q1 = m1/m2
@@ -175,15 +175,15 @@ def roche_lobe_from_a_egg(m1,m2, a_orb):
 
 
 def roche_lobe_from_a_egg_simpl(m1,m2, a_orb):
-    """Compute the Roche lobe for star 1 from the masses and orbital separation using simplified Eggleton (2006).
+    """Compute the Roche-lobe radius for star 1 from the masses and orbital separation, using simplified Eggleton (2006).
     
     Parameters:
-      m1 (float):     Mass of star 1, for which the Roche lobe should be computed (arbitrary).
+      m1 (float):     Mass of star 1, for which the Roche-lobe radius should be computed (arbitrary).
       m2 (float):     Mass of star 2 (same as m1).
-      a_orb (float):  Orbital separation (Ro).
+      a_orb (float):  Orbital separation (any length unit).
     
     Returns:
-      (float):  Roche lobe of the star with m1 (same as a_orb).
+      (float):  Roche-lobe radius of the star with m1 (same length unit as a_orb).
     """
     
     q1 = m1/m2
