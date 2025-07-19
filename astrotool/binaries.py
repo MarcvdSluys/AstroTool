@@ -288,8 +288,8 @@ def l2_from_q2(q2):
         - q2>=0.19: function is a third-order polynomial;
         - the function is quite continuous at q2=0.19, though its derivative is not.
       - Accuracy:
-        - Mean/med. |relative difference|:  dl2/l2 = 0.059% / 0.035     (orig fit: 0.025% / 0.024%);
-        - Max. |relative difference|:       dl2/l2 = 0.306% at q2=1e-6  (orig fit: 0.144% at q2=1).
+        - Mean/med. \\|relative difference\\|:  dl2/l2 = 0.059% / 0.035     (orig fit: 0.025% / 0.024%);
+        - Max. \\|relative difference\\|:       dl2/l2 = 0.306% at q2=1e-6  (orig fit: 0.144% at q2=1).
     """
     
     q2 = _np.asarray(_np.copy(q2), dtype=float)  # Copy and typecast to numpy.ndarray - ensure float!
