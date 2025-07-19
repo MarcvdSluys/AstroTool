@@ -7,13 +7,13 @@ packages = ["astrotool"]
 
 [project]
 name = "astrotool"
-version = "0.0.24"
+version = "0.0.25"
 authors = [ { name="Marc van der Sluys", email="git@vandersluys.nl" } ]
 description = "A Python package for astronomical calculations in Python or on the command line"
 readme   = "README.md"
 license  = "EUPL-1.2"
 keywords = ["astronomy","ephemeris","date","time","coordinates"]
-dependencies = ["astroconst","colored_traceback","numpy"]
+dependencies = ["astroconst","colored_traceback","numpy","pandas","scipy"]
 
 # See: https://pypi.org/pypi?:action=list_classifiers
 classifiers = [
@@ -30,7 +30,7 @@ classifiers = [
 [project.urls]
 GitHub = "https://github.com/MarcvdSluys/AstroTool"
 ReadTheDocs = "https://astrotool.readthedocs.io"
-Homepage="http://astro.ru.nl/~sluys/AstroTool"
+Homepage="https://www.nikhef.nl/~sluys/AstroTool"
 
 [project.scripts]
 at-orb-a-from-p = "astrotool.cli_scripts:orb_a_from_p"

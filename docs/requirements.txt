@@ -3,4 +3,5 @@ astroconst==0.0.13
 colored_traceback==0.4.2
 numpy
 pandas
+scipy
 sphinx-rtd-theme
