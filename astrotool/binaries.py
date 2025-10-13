@@ -70,6 +70,56 @@ def orb_p_from_a(m1,m2, a_orb):
     return Porb
 
 
+def orb_v_from_a(m1,m2, a_orb):
+    """Compute the binary orbital velocities from the masses and orbital separation, assuming circular orbits.
+    
+    Parameters:
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
+      a_orb (float):  Orbital separation (Ro).
+    
+    Returns:
+      (tuple):        (v1,v2), containing:
+    
+      v1 (float):     Orbital velocity of star 1 (km/s).
+      v2 (float):     Orbital velocity of star 2 (km/s).
+    """
+    
+    Porb   = orb_p_from_a(m1,m2, a_orb)
+    
+    const  = _ac.pi2 * a_orb * _ac.Ro / (Porb*_ac.day) / _ac.km  # m/s -> km/s
+    Mtot   = m1 + m2
+    vcirc1 = const * m2 / Mtot
+    vcirc2 = const * m1 / Mtot
+    
+    return vcirc1, vcirc2
+
+
+def orb_v_from_p(m1,m2, Porb):
+    """Compute the binary orbital velocities from the masses and orbital period, assuming circular orbits.
+    
+    Parameters:
+      m1 (float):     Mass of star 1 (Mo).
+      m2 (float):     Mass of star 2 (Mo).
+      Porb (float):   Orbital period (days).
+    
+    Returns:
+      (tuple):        (v1,v2), containing:
+    
+      v1 (float):     Orbital velocity of star 1 (km/s).
+      v2 (float):     Orbital velocity of star 2 (km/s).
+    """
+    
+    a_orb  = orb_a_from_p(m1,m2, Porb)
+    
+    const  = _ac.pi2 * a_orb * _ac.Ro / (Porb*_ac.day) / _ac.km  # m/s -> km/s
+    Mtot   = m1 + m2
+    vcirc1 = const * m2 / Mtot
+    vcirc2 = const * m1 / Mtot
+    
+    return vcirc1, vcirc2
+
+
 def orb_en_from_a(m1,m2, a_orb):
     """Compute the orbital energy from the masses and orbital separation.
     
