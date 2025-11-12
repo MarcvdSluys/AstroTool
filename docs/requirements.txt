@@ -1,5 +1,5 @@
 astrotool
-astroconst==0.0.13
+astroconst==0.0.14
 colored_traceback==0.4.2
 numpy
 pandas
