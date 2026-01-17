@@ -434,6 +434,21 @@ def gw_merger_time_from_P(m1,m2, Porb):
     return t_merge / _ac.year
     
 
+def eddington_accretion_limit(R_acc):
+    """Return the Eddington accretion limit for an accretor of given radius.
+    
+    Parameters:
+      R_acc (float):  Radius of the accretor (Ro).
+    
+    Returns:
+      (float):  Eddington accretion limit (Mo/yr).
+    """
+    
+    M_dot_edd = _ac.pi4 * _ac.c * _ac.m_h / _ac.sigma_T * R_acc * _ac.Ro  # kg/s
+    
+    return M_dot_edd / _ac.Mo_per_year  # kg/s -> Mo/yr
+
+
 # Test code:
 if __name__ == '__main__':
     pass
