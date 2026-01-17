@@ -31,7 +31,7 @@ if __name__ == '__main__' and __package__ is None:
 
 # Modules:
 import numpy as _np
-# import astroconst as _ac
+import astroconst as _ac
 
 
 def ms_rad_from_mass(mass):
@@ -186,6 +186,21 @@ def wd_radius_from_mass(mass):
     
     # rad = np.power(df.mass/1.44, 2/3)
     # radius = 1.14e-2*np.sqrt(1/rad - rad)  # FV
+    
+    return radius
+
+
+def bh_schwarzschild_radius_from_mass(mass):
+    """Return the Schwarzschild radius of a black from its mass.
+    
+    Parameters:
+      mass (float):  Black-hole mass (Mo).
+    
+    Returns:
+      (float):  Black-hole radius (km).
+    """
+    
+    radius = 2 * _ac.G * mass * _ac.Mo / _ac.c**2 / _ac.km  # m -> km
     
     return radius
 
