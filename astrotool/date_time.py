@@ -341,11 +341,23 @@ def doy_from_datetime(date_time):
     """
     
     if _np.ndim(date_time) > 0:  # Array-like:
+        
+        # Strip timezone info if present, keeping local time values:
+        if hasattr(date_time, 'dt'):  # pandas Series - is this the same check as above
+            if date_time.dt.tz is not None:
+                date_time = date_time.dt.tz_localize(None)
+        
         date_time = _np.asarray(date_time).astype('datetime64[ns]')  # Ensure we have an np.ndarray of type datetime64[ns]
         ymd = ymdhms_us_from_datetime64(date_time)
         doy = doy_from_ymd(ymd[:,0], ymd[:,1], ymd[:,2])
         
     else:  # Scalar:
+        
+        # Strip timezone info if present, keeping local time values:
+        if hasattr(date_time, 'tzinfo'):  # single datetime
+            if date_time.tzinfo is not None:
+                date_time = date_time.replace(tzinfo=None)
+                
         doy = doy_from_ymd(date_time.year, date_time.month, date_time.day)
     
     return doy
@@ -952,8 +964,8 @@ if __name__ == '__main__':
     
     
     # Leap seconds, GPS times, UNIX times:
-    _years  = _np.linspace(1960,2020, 13)  # Every 5 years
-    _jds = jd_from_date(_years,1,1)
+    _years2  = _np.linspace(1960,2020, 13)  # Every 5 years
+    _jds = jd_from_date(_years2,1,1)
     
     # GPS times, scalar:
     _gps_time = gps_time_from_jd(_jd)
@@ -970,7 +982,7 @@ if __name__ == '__main__':
     print(_jds)
     _gps_times = gps_time_from_jd(_jds)
     _datetimes = datetime_from_gps_time(_gps_times)
-    print('Years:                     ', _years)
+    print('Years:                     ', _years2)
     print('Leap secs:                 ', leap_seconds_from_jd(_jds))
     print('GPS times:                 ', _gps_times)
     print('JDs from GPS times:        ', jd_from_gps_time(_gps_times))
